@@ -10,6 +10,12 @@
     />
     <title>Bar Chart Static</title>
     <style>
+      .container {
+        margin-left: 100px;
+        display: flex;
+        align-content: center;
+        background: rgb(255, 255, 255);
+      }
       #title {
         font-family: "Poppins";
         text-align: center;
@@ -22,8 +28,10 @@
   </head>
   <body>
     <h1 id="title">Bar Chart Static</h1>
-    <!-- Add a svg area, empty -->
-    <div id="my_dataviz"></div>
+    <div class="container">
+      <!-- Add a svg area, empty -->
+      <div id="my_dataviz"></div>
+    </div>
 
     <!-- Load d3.js -->
     <script src="https://d3js.org/d3.v4.js"></script>
@@ -31,7 +39,7 @@
     <script type="module">
       // set the dimensions and margins of the graph
       var margin = { top: 10, right: 30, bottom: 90, left: 40 },
-        width = window.innerWidth - margin.left - margin.right,
+        width = window.innerWidth - 300 - margin.left - margin.right,
         height = window.innerHeight - 150 - margin.top - margin.bottom;
       const duration = 600;
       const transition = d3.easeInOut;
