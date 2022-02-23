@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<title>Updating pie chart d3 v4</title>
+<meta charset="utf-8" />
+<style>
+  body,
+  html {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  .chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+<div id="chart-wrapper" class="chart-wrapper"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.0/echarts.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
+<script src="https://d3js.org/d3-collection.v1.min.js"></script>
+<script>
+  let state = "notLoaded";
+  let datasetUrl = "";
+  let source;
+  let data;
+  let cols;
+  let width;
+  let height;
+  let config = {};
+  let option = {};
+  let col_rel = {};
+  let chartDom;
+  let chart;
+  let isChartInitialized = false;
+  // todo
+  let develop = true;
+  const onWindowResize = () => {
+    width = document.documentElement.scrollWidth;
+    height = document.documentElement.scrollHeight;
+    if (chart)
+      chart.resize({
+        width: width,
+        height: height,
+      });
+  };
+
+  window.addEventListener("resize", onWindowResize);
+
+  function onMessage(event) {
+    if (typeof event?.data == "object") {
+      return;
+    }
+    const allowedOrigins = [
+      "http://127.0.0.1:5500",
+      "http://localhost:5500",
+      "http://127.0.0.1:3000",
+      "http://localhost:3000",
+      "https://cafedata.io",
+      "*",
+    ];
+    if (!allowedOrigins.includes(event.origin)) {
+      console.error(`Invalid origin: ${event.origin}`);
+      return;
+    }
+    try {
+      const request = JSON.parse(event.data);
+      switch (request.command) {
+        case "config_changed":
+          update_config_handler(request.config);
+          break;
+        case "columns_relation_changed":
+          col_rel = request.columns_relation;
+          if (isChartInitialized) {
+            change_col(col_rel);
+          }
+          break;
+        case "data_changed":
+          datasetUrl = request.data;
+          chart_initial();
+          break;
+        case "get_state":
+          const response = {
+            command: "get_state",
+            state,
+          };
+          window.parent.postMessage(JSON.stringify(response), event.origin);
+          break;
+      }
+    } catch (error) {
+      console.error(`Invalid request: ${error}`);
+      return;
+    }
+  }
+
+  function main() {
+    //todo set col_rel and config
+    if (develop) {
+      col_rel = {
+        labels: "name",
+        values: "value",
+      };
+      config = {
+        chart: {
+          background: "#ffffff",
+          internalRadius: "30",
+          externalRadius: "60",
+          borderRadius: "20",
+          borderWidth: "5",
+          borderColor: "#ffffff",
+          type: " false",
+        },
+        title: {
+          show: true,
+          text: "pie chart hi hi",
+          color: "#020202",
+          textBorderType: "#ff0000",
+          align: "right",
+        },
+        subtext: {
+          text: "hi man sd",
+          color: "#ffffff",
+        },
+        legend: {
+          show: true,
+          orient: "horizontal",
+          align: "left",
+          padding: "10",
+          itemGap: "10",
+        },
+      };
+      chart_initial();
+    } else {
+      state = "loaded";
+      window.parent.document.getElementById("iframe0");
+      window.addEventListener("message", onMessage, false);
+      window.message = onMessage;
+    }
+  }
+
+  window.onload = main;
+
+  const chart_initial = async () => {
+    await handle_data();
+    if (source?.length) {
+      waitUntil(() => {
+        onWindowResize();
+        if (
+          width > 0 &&
+          height > 0 &&
+          Object.keys(col_rel).length &&
+          Object.keys(config).length
+        ) {
+          chartDom = document.getElementById("chart-wrapper");
+          chart = echarts.init(chartDom);
+          init_chart();
+          isChartInitialized = true;
+          return true;
+        }
+      });
+    }
+  };
+
+  ///////////////////////////////////
+
+  const get_options = () => {
+    return (option = {
+      backgroundColor: config?.chart?.background,
+      title: {
+        show: config?.title?.show,
+        text: config?.title?.text,
+        subtext: config?.subtext?.text,
+        left: config?.title?.align,
+        textStyle: {
+          textBorderType: config?.title?.textBorderType,
+          color: config?.title?.color,
+        },
+        subtextStyle: {
+          color: config?.subtext?.color,
+        },
+      },
+      tooltip: {
+        trigger: "item",
+      },
+      legend: {
+        show: config?.legend?.show,
+        orient: config?.legend?.orient,
+        left: config?.legend?.align,
+        padding: Number(config?.legend?.padding),
+        itemGap: Number(config?.legend?.itemGap),
+      },
+      dataset: {
+        source: source,
+      },
+      series: [
+        {
+          type: "pie",
+          roseType: stringToBoll(config?.chart?.type),
+          radius: [
+            `${config?.chart?.internalRadius}%`,
+            `${config?.chart?.externalRadius}%`,
+          ],
+          avoidLabelOverlap: true,
+          itemStyle: {
+            borderRadius: config?.chart?.borderRadius,
+            borderColor: config?.chart?.borderColor,
+            borderWidth: config?.chart?.borderWidth,
+          },
+          encode: {
+            value: col_rel?.values,
+            itemName: col_rel?.labels,
+          },
+
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.5)",
+            },
+          },
+        },
+      ],
+    });
+  };
+
+  // this method is executed when changing the config.
+  const init_chart = () => {
+    // todo init options
+    get_options() && chart.setOption(get_options());
+  };
+  // this method is executed when changing the data binding.
+  const change_col = (cols) => {
+    init_chart();
+  };
+
+  // this method is executed when changing the config.
+  const update_config_handler = (newConfig) => {
+    let oldConfig = null;
+    if (config) {
+      oldConfig = { ...config };
+    }
+    config = newConfig;
+
+    if (!chart) return;
+    // todo update option
+    // chart
+    chart.setOption(get_options());
+  };
+
+  // fetch data and convert to standard data chart
+  // set data to global state
+  //***
+  // source = all data
+  // col = just col(data[0])
+  // data = all data except for col
+  //***
+  const handle_data = async () => {
+    try {
+      let _data;
+      _data = await downloadCsv(datasetUrl);
+      source = _data;
+      col = _data[0];
+      data = _data.slice(1);
+    } catch (e) {
+      console.log("error in handle data");
+      return false;
+    }
+  };
+
+  ////////////// helper
+  const waitUntil = (callback) => {
+    const _t = setInterval(() => {
+      const r = callback();
+      if (r === true) {
+        clearInterval(_t);
+      }
+    }, 100);
+  };
+
+  function downloadCsv(url) {
+    return new Promise((resolve, reject) => {
+      // todo
+      if (develop) {
+        Papa.parse("https://cafedata.io/api/template/get/data/5", {
+          download: true,
+          complete(results, url) {
+            resolve(results.data);
+          },
+          error(err, url) {
+            reject(err);
+          },
+        });
+      } else {
+        Papa.parse(url, {
+          download: true,
+          complete(results, url) {
+            resolve(results.data);
+          },
+          error(err, url) {
+            reject(err);
+          },
+        });
+      }
+    });
+  }
+  function stringToBoll(_value) {
+    if (_value === "true") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+</script>

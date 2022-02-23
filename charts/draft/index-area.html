@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Radar Chart</title>
+    <!-- echarts script -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.0/dist/echarts.min.js"></script>
+    <!-- d3 script for csv -->
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <style></style>
+  </head>
+  <body>
+    <!-- Prepare a DOM with a defined width and height for ECharts -->
+    <div id="main" style="width: 100%; height: 100vh"></div>
+    <script type="module">
+      // variables
+      let width = document.documentElement.scrollWidth;
+      let height = document.documentElement.scrollHeight;
+      let showLegend = true;
+      let options;
+      let col_rel;
+      let datasetUrl = "./data.csv";
+      var myChart;
+      let source;
+
+      document.getElementById("main").style.width = width;
+      document.getElementById("main").style.height = height;
+      window.message = onMessage;
+
+      function onMessage(event) {
+        if (typeof event?.data == "object") {
+          return;
+        }
+        const allowedOrigins = [
+          "http://127.0.0.1:3000",
+          "http://localhost:3000",
+          "https://cafedata.io",
+          "*",
+        ];
+        if (!allowedOrigins.includes(event.origin)) {
+          console.error(`Invalid origin: ${event.origin}`);
+          return;
+        }
+        try {
+          const request = JSON.parse(event.data);
+          switch (request.command) {
+            case "config_changed":
+              update_handler(request.config);
+              break;
+            case "columns_relation_changed":
+              col_rel = request.columns_relation;
+              chart_redraw();
+              break;
+            case "data_changed":
+              datasetUrl = request.data;
+              if (request?.columns_relation) {
+                col_rel = request.columns_relation;
+              }
+              chart_redraw();
+              break;
+            case "get_state":
+              const response = {
+                command: "get_state",
+                state,
+              };
+              window.parent.postMessage(JSON.stringify(response), event.origin);
+              break;
+          }
+        } catch (error) {
+          console.error(`Invalid request: ${error}`);
+          return;
+        }
+      }
+
+      chart_init();
+      chart_redraw();
+
+      setTimeout(() => {
+        // showLegend = false;
+        // console.log("drawing charts");
+        // d3.csv(datasetUrl, function (data) {
+        //   // alert(JSON.stringify(data));
+        //   alert(JSON.stringify(data));
+        //   data.forEach((item) => {
+        //     console.log(get_object_values(item));
+        //   });
+        // });
+        datasetUrl = "./data2.csv";
+        chart_redraw();
+      }, 3000);
+
+      ///////////////////////   Drawing Chart    ///////////////////////
+
+      function chart_init() {
+        // Initialize the echarts instance based on the prepared dom
+        myChart = echarts.init(document.getElementById("main"), null, {
+          renderer: "svg",
+        });
+      }
+
+      function chart_redraw() {
+        d3.csv(datasetUrl, function (chartData) {
+          source = chartData;
+          myChart.setOption(getOptions(source));
+        });
+      }
+
+      function getOptions(chartData) {
+        console.log("data : " + JSON.stringify(chartData));
+        return {
+          title: {
+            text: "Stacked Area Chart",
+          },
+          tooltip: {
+            trigger: "axis",
+            axisPointer: {
+              type: "cross",
+              label: {
+                backgroundColor: "#6a7985",
+              },
+            },
+          },
+          legend: {
+            data: [
+              "Email",
+              "Union Ads",
+              "Video Ads",
+              "Direct",
+              "Search Engine",
+            ],
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {},
+            },
+          },
+          grid: {
+            left: "3%",
+            right: "4%",
+            bottom: "3%",
+          },
+          xAxis: [
+            {
+              type: "category",
+              boundaryGap: false,
+              data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+            },
+          ],
+          dataset: {
+            source: source,
+          },
+          yAxis: [
+            {
+              type: "value",
+            },
+          ],
+          series: [
+            {
+              name: "Email",
+              type: "line",
+              stack: "Total",
+              areaStyle: {},
+              emphasis: {
+                focus: "series",
+              },
+              data: [120, 132, 101, 134, 90, 230, 210],
+            },
+            {
+              name: "Union Ads",
+              type: "line",
+              stack: "Total",
+              areaStyle: {},
+              emphasis: {
+                focus: "series",
+              },
+              data: [220, 182, 191, 234, 290, 330, 310],
+            },
+            {
+              name: "Video Ads",
+              type: "line",
+              stack: "Total",
+              areaStyle: {},
+              emphasis: {
+                focus: "series",
+              },
+              data: [150, 232, 201, 154, 190, 330, 410],
+            },
+            {
+              name: "Direct",
+              type: "line",
+              stack: "Total",
+              areaStyle: {},
+              emphasis: {
+                focus: "series",
+              },
+              data: [320, 332, 301, 334, 390, 330, 320],
+            },
+            {
+              name: "Search Engine",
+              type: "line",
+              stack: "Total",
+              label: {
+                show: true,
+                position: "top",
+              },
+              areaStyle: {},
+              emphasis: {
+                focus: "series",
+              },
+              data: [820, 932, 901, 934, 1290, 1330, 1320],
+            },
+          ],
+        };
+      }
+
+      ///////////////////////   Helper Functions    ///////////////////////
+
+      function get_object_keys(data) {
+        const keys = Object.keys(data[0]);
+        keys.splice(0, 1);
+        return keys;
+      }
+
+      function get_object_values(data) {
+        const values = Object.values(data);
+        values.splice(0, 1);
+        return values;
+      }
+
+      function get_data_objects(data) {
+        const categories = data.map((item) => {
+          const key = Object.keys(item)[0];
+          return item[key];
+        });
+        console.log(categories);
+        return categories;
+      }
+    </script>
+  </body>
+</html>

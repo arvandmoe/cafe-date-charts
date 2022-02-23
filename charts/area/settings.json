@@ -1,0 +1,157 @@
+[
+	{
+		"name": "area chart",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "font size",
+						"field": "areaChart.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%"
+					},
+					{
+						"label": "count",
+						"field": "areaChart.count",
+						"type": "switch",
+						"default": true,
+						"width": "50%"
+					},
+					{
+						"label": "background",
+						"field": "areaChart.background",
+						"type": "color-picker",
+						"default": "#ffffff",
+						"width": "100%"
+					},
+					{
+						"label": "count color",
+						"field": "areaChart.countColor",
+						"type": "color-picker",
+						"default": "#111111",
+						"width": "100%"
+					},
+					{
+						"label": "palette",
+						"field": "areaChart.palette",
+						"type": "select-color-palette",
+						"default": "#1D6996,#EDAD08,#73AF48,#94346E,#38A6A5,#E17C05,#5F4690,#0F8554,#6F4070,#CC503E,#994E95,#666666",
+						"width": "100%",
+						"options": [
+							{
+								"display": "first",
+								"value": "#1D6996,#EDAD08,#73AF48,#94346E,#38A6A5,#E17C05,#5F4690,#0F8554,#6F4070,#CC503E,#994E95,#666666"
+							},
+							{
+								"display": "second",
+								"value": "#11A579,#CC503E,#3969AC,#F2B701,#7F3C8D,#80BA5A,#E68310,#CF1C90,#008695,#F97B72,#4B4B8F,#A5AA99"
+							}
+						]
+					},
+					{
+						"label": "position",
+						"field": "label.position",
+						"type": "radio-button",
+						"default": "top",
+						"width": "100%",
+						"options": [
+							{
+								"display": "top",
+								"value": "top"
+							},
+							{
+								"display": "bottom",
+								"value": "bottom"
+							},
+							{
+								"display": "center",
+								"value": "center"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "xAxis",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "font size",
+						"field": "xAxis.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%"
+					},
+					{
+						"label": "font color",
+						"field": "xAxis.fontColor",
+						"type": "color-picker",
+						"default": "#ffffff",
+						"width": "50%"
+					},
+					{
+						"label": "position",
+						"field": "xAxis.position",
+						"type": "radio-button",
+						"default": "bottom",
+						"width": "100%",
+						"options": [
+							{
+								"display": "top",
+								"value": "top"
+							},
+							{
+								"display": "bottom",
+								"value": "bottom"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "yAxis",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "font size",
+						"field": "yAxis.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%"
+					},
+					{
+						"label": "font color",
+						"field": "yAxis.fontColor",
+						"type": "color-picker",
+						"default": "#ffffff",
+						"width": "50%"
+					},
+					{
+						"label": "position",
+						"field": "yAxis.position",
+						"type": "radio-button",
+						"default": "left",
+						"width": "100%",
+						"options": [
+							{
+								"display": "left",
+								"value": "left"
+							},
+							{
+								"display": "right",
+								"value": "right"
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]
