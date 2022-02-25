@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<title>pie chart static</title>
+<meta charset="utf-8" />
+<style>
+  body,
+  html {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .chart-wrapper .guaid {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 0;
+    left: 0;
+  }
+  .label {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .guaidItem {
+    margin: 10px;
+    display: flex;
+    align-items: center;
+  }
+  .guaidItemColor {
+    border-radius: 100%;
+    margin-right: 5px;
+  }
+  .chart-wrapper .chart_svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .chart-wrapper .chart_svg .logo {
+    opacity: 0.8;
+  }
+
+  .chart-wrapper .chart_svg .tick line {
+    stroke: white;
+    opacity: 0.8;
+    display: none;
+  }
+
+  .chart-wrapper .chart_svg .tick text {
+  }
+
+  .chart-wrapper .chart_svg .tick line {
+    display: none;
+  }
+
+  .chart-wrapper .chart_svg .center-line {
+    opacity: 0.65;
+  }
+
+  .chart-wrapper .chart_svg .domain {
+    display: none;
+  }
+
+  /*  end*/
+</style>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://d3js.org/d3-collection.v1.min.js"></script>
+<div class="chart-wrapper">
+  <div id="guaid" class="guaid"></div>
+  <text id="label" class="label"></text>
+  <svg id="chart" class="chart_svg"></svg>
+</div>
+<script>
+  let state = 'notLoaded'
+  let datasetUrl = null
+  let allData
+  let data
+  let datesCols = []
+  let selectedDate
+  let chart = {}
+  let col_rel
+  let colorPalette = ''
+  let isChartInitialized = false
+  const wfactor = 1
+  const hfactor = 1
+  let statusPalySlider = true
+  let firstGuaid = true
+  let width = document.documentElement.scrollWidth
+  let height = document.documentElement.scrollHeight
+  let config = {}
+
+  let duration = 1000
+  const ease = d3.easeLinear
+  const settings = {
+    innerWidth: 0,
+    minBarPercent: 5
+  }
+
+  // browser events
+  const sizeTransform = () => {
+    width = width * wfactor
+    height = height * hfactor
+  }
+
+  const onWindowResize = () => {
+    width = document.documentElement.scrollWidth
+    height = document.documentElement.scrollHeight
+    sizeTransform()
+    if (isChartInitialized) {
+      chart_update()
+    }
+  }
+  sizeTransform()
+
+  const onResizeHandler = debounce(onWindowResize, 500)
+
+  window.removeEventListener('resize', onResizeHandler)
+  window.addEventListener('resize', onResizeHandler)
+
+  function onMessage (event) {
+    if (typeof event?.data == 'object') {
+      return
+    }
+    const allowedOrigins = [
+      'http://127.0.0.1:5500',
+      'http://localhost:5500',
+      'http://127.0.0.1:3000',
+      'http://localhost:3000',
+      'https://cafedata.io',
+      '*'
+    ]
+    if (!allowedOrigins.includes(event.origin)) {
+      console.error(`Invalid origin: ${event.origin}`)
+      return
+    }
+    try {
+      const request = JSON.parse(event.data)
+      switch (request.command) {
+        case 'config_changed':
+          update_handler(request.config)
+          break
+        case 'columns_relation_changed':
+          col_rel = request.columns_relation
+          chart_initial()
+          break
+        case 'data_changed':
+          datasetUrl = request.data
+          if (request?.columns_relation) {
+            col_rel = request.columns_relation
+          }
+          chart_initial()
+          break
+        case 'get_state':
+          const response = {
+            command: 'get_state',
+            state
+          }
+          window.parent.postMessage(JSON.stringify(response), event.origin)
+          break
+      }
+    } catch (error) {
+      console.error(`Invalid request: ${error}`)
+      return
+    }
+  }
+
+  function main () {
+    state = 'loaded'
+    init()
+    window.addEventListener('message', onMessage, false)
+  }
+
+  window.message = onMessage
+  window.onload = main
+
+  function init () {
+    const frame = window.parent.document.getElementById('iframe0')
+  }
+  const calWidthHeight = () => {}
+  // wait until return true
+
+  const waitUntil = callback => {
+    const _t = setInterval(() => {
+      const r = callback()
+      if (r === true) {
+        clearInterval(_t)
+      }
+    }, 100)
+  }
+
+  const handle_data = async () => {
+    try {
+      if (datasetUrl) {
+        allData = await d3.csv(datasetUrl)
+        const { columns, ...otherData } = allData
+
+        return Object.values(otherData)
+      }
+    } catch (e) {
+      return false
+    }
+  }
+
+  const chart_initial = async () => {
+    if (datasetUrl) {
+      data = await handle_data()
+      console.log(data)
+    }
+    if (allData?.length) {
+      waitUntil(() => {
+        if (width > 0 && height > 0 && !isChartInitialized) {
+          chart_first()
+          chart_update()
+          isChartInitialized = true
+          return true
+        }
+      })
+      if (isChartInitialized) {
+        chart_update()
+      }
+    }
+  }
+  const chart_first = () => {
+    chart.myDuration = duration
+    chart.radius = Math.min(width, height) / 2
+
+    //chart.color = d3.scaleOrdinal(colorPalette.length ? colorPalette.splice(',') :d3.schemeAccent);
+    chart.pie = d3
+      .pie()
+      .value(function (d) {
+        return d[col_rel.values]
+      })
+      .sort(null)
+
+    chart.arc = d3
+      .arc()
+      .innerRadius(chart.radius - 100)
+      .outerRadius(chart.radius - 20)
+
+    chart.svg = d3
+      .select('#chart')
+      .attr('width', width)
+      .attr('height', height)
+      .append('g')
+      .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')')
+
+    chart.guaid = d3
+      .select('#guaid')
+      ?.style?.('opacity', config?.guide?.display ? 1 : 0)
+      ?.attr?.('show', config?.guide?.display)
+
+    chart.label = d3.select('#label')
+
+    chart.label
+      ?.text?.(config?.label?.text)
+      ?.style?.('color', config?.label?.color)
+      ?.style?.('font-size', config?.label?.fontSize + 'px')
+      ?.style?.('opacity', config?.label?.display ? 1 : 0)
+      ?.attr?.('show', config?.label?.display)
+    setPosition(chart.label, config?.label?.position)
+  }
+  const chart_update = () => {
+    //TODO opt and animation
+    d3.select('#chart')
+      ?.attr('width', width)
+      ?.attr('height', height)
+
+    chart?.svg
+      ?.attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')')
+      .transition()
+
+    chart.arc = d3
+      .arc()
+      .innerRadius(0)
+      .outerRadius(chart.radius - 20)
+    chart.radius = Math.min(width, height) / 2
+    change(data)
+    function change (data) {
+      if (!data || !chart?.pie) return
+      let path = chart?.svg?.selectAll('path')
+      let guide = chart?.guaid?.selectAll('g')
+      let label = chart.label
+      const data0 = path?.data()
+      const data1 = chart?.pie(data)
+      path = path?.data(data1, data[col_rel.labels])
+      guide = guide?.data(data1, data[col_rel.labels])
+      let itemsGuide = null
+
+      path
+        ?.attr('fill', function (d, i) {
+          if (d.data[col_rel?.labels])
+            return chart.color(d.data[col_rel?.labels])
+        })
+        ?.transition()
+        ?.duration(duration)
+        ?.attrTween('d', arcTween)
+
+      path
+        ?.enter()
+        ?.append('path')
+        ?.each(function (d, i) {
+          const narc = findNeighborArc(i, data0, data1, key)
+          if (narc) {
+            this._current = narc
+            this._previous = narc
+          } else {
+            this._current = d
+          }
+        })
+        ?.attr('fill', function (d, i) {
+          return chart.color(d.data[col_rel.labels])
+        })
+        ?.transition()
+        ?.duration(duration)
+        ?.attrTween('d', arcTween)
+
+      guide.join(
+        enter => {
+          enter
+            ?.append('g')
+            ?.classed('guaidItem', true)
+            .call(item =>
+              item
+                .append('div')
+                ?.style('width', config?.guide?.fontSize + 'px')
+                ?.style('height', config?.guide?.fontSize + 'px')
+                ?.classed('guaidItemColor', true)
+                ?.style('background', function (d, i) {
+                  return chart.color(d.data[col_rel.labels])
+                })
+            )
+            .call(item =>
+              item
+                ?.append('text')
+                ?.text(function (d) {
+                  return `${d.data[col_rel.labels]}:  ${d.data[col_rel.values]}`
+                })
+                .style('font-size', config?.guide?.fontSize + 'px')
+            )
+        },
+        update => {
+          update
+            .call(g =>
+              g
+                ?.select?.('div')
+                .style('background', d => chart.color(d.data[col_rel.labels]))
+            )
+            .call(g =>
+              g
+                ?.select?.('text')
+                .text(
+                  d => `${d.data[col_rel.labels]}:  ${d.data[col_rel.values]}`
+                )
+            )
+        },
+        exit => {
+          exit.remove()
+        }
+      )
+
+      chart.svg
+        ?.selectAll('.label')
+        ?.data(data1, data['group'])
+        ?.join(enter => {
+          let _label = enter?.append('text')
+          _label?.classed('label', true)
+          return _label
+        })
+        ?.call(update => {
+          update
+            ?.text(function (d) {
+              return d.data[col_rel.values]
+            })
+            ?.style('text-anchor', 'middle')
+            ?.attr('font-size', config?.pieChart?.fontSize + 'px')
+            ?.attr('fill', config?.pieChart?.countColor)
+            ?.style('opacity', config?.pieChart?.count ? 1 : 0)
+            ?.attr('show', config?.pieChart?.count)
+            ?.transition()
+            ?.duration(duration)
+            ?.attrTween('transform', textTween)
+        })
+    }
+
+    function arcTween (d) {
+      const i = d3?.interpolate(this._current, d)
+      this._current = i(0)
+      return function (t) {
+        return chart?.arc(i(t))
+      }
+    }
+
+    function textTween (d) {
+      const i = d3?.interpolate(this._current, d)
+      this._current = i(0)
+      return function (t) {
+        return `translate (${chart.arc.centroid(i(t))})`
+      }
+    }
+  }
+
+  const update_handler = newConfig => {
+    let oldConfig = null
+    if (config) {
+      oldConfig = { ...config }
+    }
+    config = newConfig
+
+    if (oldConfig?.pieChart?.background !== config?.pieChart?.background) {
+      d3.select('#chart').style('background', config?.pieChart?.background)
+    }
+    if (oldConfig?.pieChart?.countColor !== config?.pieChart?.countColor) {
+      chart?.svg?.selectAll('.label').attr('fill', config?.pieChart?.countColor)
+    }
+    if (oldConfig?.pieChart?.fontSize !== config?.pieChart?.fontSize) {
+      chart?.svg
+        ?.selectAll('.label')
+        .attr('font-size', config?.pieChart?.fontSize + 'px')
+    }
+    if (oldConfig?.pieChart?.count !== config?.pieChart?.count) {
+      chart?.svg
+        ?.selectAll('.label')
+        .style('opacity', config?.pieChart?.count ? 1 : 0)
+      chart?.svg?.selectAll('.label').attr('show', config?.pieChart?.count)
+    }
+    if (oldConfig?.pieChart?.palette !== config?.pieChart?.palette) {
+      colorPalette = config?.pieChart?.palette
+      chart.color = d3.scaleOrdinal(colorPalette.split(','))
+      chart?.svg?.selectAll('path')?.attr('fill', function (d, i) {
+        return chart.color(d.data[col_rel.labels])
+      })
+      chart?.guaid
+        ?.selectAll('g div')
+        ?.style('background', d => chart.color(d.data[col_rel.labels]))
+    }
+    if (oldConfig?.pieChart?.duration !== config?.pieChart?.duration) {
+      duration = config?.pieChart?.duration
+    }
+
+    if (oldConfig?.label?.color !== config?.label?.color) {
+      chart.label?.style('color', config?.label?.color)
+    }
+    if (oldConfig?.label?.display !== config?.label?.display) {
+      chart.label
+        ?.style('opacity', config?.label?.display ? 1 : 0)
+        ?.attr('show', config?.label?.display)
+    }
+    if (oldConfig?.label?.fontSize !== config?.label?.fontSize) {
+      chart.label?.style('font-size', config?.label?.fontSize + 'px')
+    }
+    if (oldConfig?.label?.position !== config?.label?.position) {
+      if (config?.label) setPosition(chart.label, config?.label?.position)
+    }
+    if (oldConfig?.label?.text !== config?.label?.text) {
+      chart.label?.text(config?.label?.text)
+    }
+    if (oldConfig?.guide?.display !== config?.guide?.display) {
+      chart?.guaid
+        ?.style('opacity', config?.guide?.display ? 1 : 0)
+        ?.attr('show', config?.guide?.display)
+    }
+    if (oldConfig?.guide?.fontSize !== config?.guide?.fontSize) {
+      chart?.guaid
+        ?.selectAll('g text')
+        ?.style('font-size', config?.guide?.fontSize + 'px')
+
+      chart?.guaid
+        ?.selectAll('g div')
+        ?.style('width', config?.guide?.fontSize + 'px')
+        ?.style('height', config?.guide?.fontSize + 'px')
+    }
+  }
+  function key (d) {
+    return d.data.region
+  }
+  function setPosition (element, position) {
+    if (position === 'bottom') {
+      element?.style('top', 'auto')?.style('bottom', 0)
+    }
+    if (position === 'top') {
+      element?.style('top', 0)?.style('bottom', 'auto')
+    }
+  }
+  function findNeighborArc (i, data0, data1, key) {
+    let d
+    if ((d = findPreceding(i, data0, data1, key))) {
+      const obj = cloneObj(d)
+      obj.startAngle = d.endAngle
+      return obj
+    } else if ((d = findFollowing(i, data0, data1, key))) {
+      const obj = cloneObj(d)
+      obj.endAngle = d.startAngle
+      return obj
+    }
+
+    return null
+  }
+
+  // Find the element in data0 that joins the highest preceding element in data1.
+  function findPreceding (i, data0, data1, key) {
+    const m = data0.length
+    while (--i >= 0) {
+      const k = key(data1[i])
+      for (let j = 0; j < m; ++j) {
+        if (key(data0[j]) === k) return data0[j]
+      }
+    }
+  }
+
+  // Find the element in data0 that joins the lowest following element in data1.
+  function findFollowing (i, data0, data1, key) {
+    const n = data1.length,
+      m = data0.length
+    while (++i < n) {
+      const k = key(data1[i])
+      for (let j = 0; j < m; ++j) {
+        if (key(data0[j]) === k) return data0[j]
+      }
+    }
+  }
+
+  function cloneObj (obj) {
+    const o = {}
+    for (const i in obj) {
+      o[i] = obj[i]
+    }
+    return o
+  }
+
+  function debounce (func, wait, immediate) {
+    let timeout
+    return function () {
+      let context = this,
+        args = arguments
+      let later = function () {
+        timeout = null
+        if (!immediate) func.apply(context, args)
+      }
+      let callNow = immediate && !timeout
+      clearTimeout(timeout)
+      timeout = setTimeout(later, wait)
+      if (callNow) func.apply(context, args)
+    }
+  }
+</script>
