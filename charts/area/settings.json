@@ -22,16 +22,20 @@
 						"label": "palette",
 						"field": "chart.palette",
 						"type": "select-color-palette",
-						"default": "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#3ba272,#fc845,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f",
+						"default": "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#F2B701,#2EC4B6,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f",
 						"width": "100%",
 						"options": [
 							{
 								"display": "first",
-								"value": "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#3ba272,#fc845,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f"
+								"value": "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#F2B701,#2EC4B6,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f"
 							},
 							{
 								"display": "second",
 								"value": "#11A579,#CC503E,#3969AC,#F2B701,#7F3C8D,#80BA5A,#E68310,#CF1C90,#008695,#F97B72,#4B4B8F,#A5AA99"
+							},
+							{
+								"display": "third",
+								"value": "#2C1320,#006D77,#DB5461,#E2EF70,#94C9A9,#ADA7C9,#2EC4B6,#CEDFD9,#008695,#ACAD94,#4B4B8F,#85BDA6"
 							}
 						]
 					},
@@ -91,14 +95,14 @@
 						"field": "title.color",
 						"type": "color-picker",
 						"default": "#000",
-						"width": "50%"
+						"width": "100%"
 					},
 					{
 						"label": "backgroundColor",
 						"field": "title.backgroundColor",
 						"type": "color-picker",
 						"default": "transparent",
-						"width": "50%"
+						"width": "100%"
 					},
 					{
 						"label": "fontWeight",
@@ -202,20 +206,6 @@
 			{
 				"components": [
 					{
-						"label": "font size",
-						"field": "yAxis.fontSize",
-						"type": "input-number",
-						"default": "12",
-						"width": "50%"
-					},
-					{
-						"label": "font color",
-						"field": "yAxis.fontColor",
-						"type": "color-picker",
-						"default": "#ffffff",
-						"width": "50%"
-					},
-					{
 						"label": "position",
 						"field": "yAxis.position",
 						"type": "radio-button",
@@ -229,6 +219,58 @@
 							{
 								"display": "right",
 								"value": "right"
+							}
+						]
+					},
+					{
+						"label": "label",
+						"field": "yAxis.name",
+						"type": "input-text",
+						"default": "xAxis",
+						"width": "50%"
+					},
+					{
+						"label": "show label",
+						"field": "yAxis.showName",
+						"type": "switch",
+						"default": false,
+						"width": "50%"
+					},
+					{
+						"label": "font size",
+						"field": "yAxis.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%"
+					},
+					{
+						"label": "label rotate",
+						"field": "yAxis.labelRotate",
+						"type": "input-number",
+						"default": "0",
+						"width": "50%"
+					},
+					{
+						"label": "font color",
+						"field": "yAxis.fontColor",
+						"type": "color-picker",
+						"default": "#ffffff",
+						"width": "50%"
+					},
+					{
+						"label": "label location",
+						"field": "yAxis.nameLocation",
+						"type": "radio-button",
+						"default": "end",
+						"width": "100%",
+						"options": [
+							{
+								"display": "start",
+								"value": "start"
+							},
+							{
+								"display": "end",
+								"value": "end"
 							}
 						]
 					}

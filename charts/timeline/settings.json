@@ -1,0 +1,219 @@
+[
+	{
+		"name": "chart",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "background",
+						"field": "chart.background",
+						"type": "color-picker",
+						"default": "#ffffff",
+						"width": "100%"
+					},
+					{
+						"label": "internal radius",
+						"field": "chart.internalRadius",
+						"type": "input-number",
+						"default": "10",
+						"width": "50%"
+					},
+					{
+						"label": "externalRadius",
+						"field": "chart.externalRadius",
+						"type": "input-text",
+						"default": "50",
+						"width": "50%"
+					},
+					{
+						"label": "border radius",
+						"field": "chart.borderRadius",
+						"type": "input-text",
+						"default": "0",
+						"width": "50%"
+					},
+					{
+						"label": "border width",
+						"field": "chart.borderWidth",
+						"type": "input-text",
+						"default": "5",
+						"width": "50%"
+					},
+					{
+						"label": "border color",
+						"field": "chart.borderColor",
+						"type": "color-picker",
+						"default": "#fff",
+						"width": "100%"
+					},
+					{
+						"label": "type",
+						"field": "chart.type",
+						"type": "radio-button",
+						"default": "area",
+						"width": "100%",
+						"options": [
+							{
+								"display": "rose",
+								"value": "true"
+							},
+							{
+								"display": "normal",
+								"value": "false"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "title",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "show",
+						"field": "title.show",
+						"type": "switch",
+						"default": true,
+						"width": "100%"
+					},
+					{
+						"label": "text",
+						"field": "title.text",
+						"type": "input-text",
+						"default": "pie chart",
+						"width": "100%"
+					},
+					{
+						"label": "color",
+						"field": "title.color",
+						"type": "color-picker",
+						"default": "#111111",
+						"width": "50%"
+					},
+					{
+						"label": "textBorderType",
+						"field": "title.textBorderType",
+						"type": "color-picker",
+						"default": "#111111",
+						"width": "50%"
+					},
+					{
+						"label": "align",
+						"field": "title.align",
+						"type": "radio-button",
+						"default": "center",
+						"width": "100%",
+						"options": [
+							{
+								"display": "center",
+								"value": "center"
+							},
+							{
+								"display": "left",
+								"value": "left"
+							},
+							{
+								"display": "right",
+								"value": "right"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "subtext",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "text",
+						"field": "subtext.text",
+						"type": "input-text",
+						"default": "",
+						"width": "100%"
+					},
+					{
+						"label": "color",
+						"field": "subtext.color",
+						"type": "color-picker",
+						"default": "#111111",
+						"width": "100%"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "legend",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "show",
+						"field": "legend.show",
+						"type": "switch",
+						"default": true,
+						"width": "100%"
+					},
+					{
+						"label": "orient",
+						"field": "legend.orient",
+						"type": "radio-button",
+						"default": "vertical",
+						"width": "100%",
+						"options": [
+							{
+								"display": "horizontal",
+								"value": "horizontal"
+							},
+							{
+								"display": "vertical",
+								"value": "vertical"
+							}
+						]
+					},
+					{
+						"label": "align",
+						"field": "legend.align",
+						"type": "radio-button",
+						"default": "center",
+						"width": "100%",
+						"options": [
+							{
+								"display": "left",
+								"value": "left"
+							},
+							{
+								"display": "center",
+								"value": "center"
+							},
+							{
+								"display": "right",
+								"value": "right"
+							}
+						]
+					},
+					{
+						"label": "padding",
+						"field": "legend.padding",
+						"type": "input-number",
+						"default": "5",
+						"width": "50%"
+					},
+					{
+						"label": "itemGap",
+						"field": "legend.itemGap",
+						"type": "input-number",
+						"default": "5",
+						"width": "50%"
+					}
+				]
+			}
+		]
+	}
+]

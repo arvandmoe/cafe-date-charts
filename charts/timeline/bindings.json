@@ -1,0 +1,23 @@
+[
+    {
+        "field": "rowFilter",
+        "label": "Row filter",
+        "default": "A",
+        "required": true,
+        "hint": ""
+    },
+    {
+        "field": "labels",
+        "label": "labels",
+        "default": "B",
+        "required": true,
+        "hint": ""
+    },
+    {
+        "field": "values",
+        "label": "values",
+        "default": "C",
+        "required": true,
+        "hint": ""
+    }
+]
