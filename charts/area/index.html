@@ -36,7 +36,7 @@
   let chart;
   let isChartInitialized = false;
   // todo
-  let develop = true;
+  let develop = false;
   let showLegend = true;
 
   const onWindowResize = () => {
@@ -130,21 +130,30 @@
           bottom: "0",
           right: "0",
         },
+        legend: {
+          show: true,
+          align: "auto",
+          itemGap: "10",
+        },
         xAxis: {
           name: "xAxis",
           showName: true,
-          fontSize: "16",
+          fontSize: "14",
           nameLocation: "middle",
           position: "bottom",
           labelRotate: "0",
+          nameGap: 24,
+          margin: 8,
         },
         yAxis: {
           name: "yAxis",
           showName: true,
           fontSize: "12",
           position: "top",
-          nameLocation: "end",
+          nameLocation: "middle",
+          nameGap: 30,
           labelRotate: "0",
+          margin: 8,
         },
         subtext: {
           text: "hi man sd",
@@ -222,8 +231,10 @@
         },
       },
       legend: {
-        show: true,
-        data: source[0],
+        show: config?.legend?.show,
+        align: config?.legend?.align,
+        itemGap: config?.legend?.itemGap,
+        data: source[1],
       },
       toolbox: {
         feature: {
@@ -242,6 +253,7 @@
           axisLabel: {
             fontSize: `${config?.xAxis?.fontSize}px`,
             rotate: config?.xAxis?.labelRotate,
+            margin: config?.xAxis?.margin,
           },
         },
       ],
@@ -255,6 +267,7 @@
           axisLabel: {
             fontSize: `${config?.yAxis?.fontSize}px`,
             rotate: config?.yAxis?.labelRotate,
+            margin: config?.yAxis?.margin,
           },
         },
       ],

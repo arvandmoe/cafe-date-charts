@@ -227,13 +227,6 @@
 						]
 					},
 					{
-						"label": "font size",
-						"field": "yAxis.fontSize",
-						"type": "input-number",
-						"default": "12",
-						"width": "50%"
-					},
-					{
 						"label": "rotation",
 						"field": "yAxis.labelRotate",
 						"type": "input-number",

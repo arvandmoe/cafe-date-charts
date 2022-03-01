@@ -89,19 +89,22 @@
 						"type": "input-number",
 						"default": "0",
 						"width": "25%"
-					},{
+					},
+					{
 						"label": "left",
 						"field": "title.left",
 						"type": "input-number",
 						"default": "0",
 						"width": "25%"
-					},{
+					},
+					{
 						"label": "bottom",
 						"field": "title.bottom",
 						"type": "input-number",
 						"default": "0",
 						"width": "25%"
-					},{
+					},
+					{
 						"label": "right",
 						"field": "title.right",
 						"type": "input-number",
@@ -142,6 +145,50 @@
 								"value": "bold"
 							}
 						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "legend",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "align",
+						"field": "legend.align",
+						"type": "radio-button",
+						"default": "auto",
+						"width": "100%",
+						"options": [
+							{
+								"display": "left",
+								"value": "left"
+							},
+							{
+								"display": "auto",
+								"value": "auto"
+							},
+							{
+								"display": "right",
+								"value": "right"
+							}
+						]
+					},
+					{
+						"label": "item gap",
+						"field": "legend.itemGap",
+						"type": "input-number",
+						"default": "10",
+						"width": "50%"
+					},
+					{
+						"label": "legend",
+						"field": "legend.show",
+						"type": "switch",
+						"default": false,
+						"width": "50%"
 					}
 				]
 			}
@@ -266,7 +313,7 @@
 						"width": "50%"
 					},
 					{
-						"label": "show label",
+						"label": "label",
 						"field": "yAxis.showName",
 						"type": "switch",
 						"default": false,
@@ -280,18 +327,18 @@
 						"width": "50%"
 					},
 					{
-						"label": "label rotate",
+						"label": "rotation",
 						"field": "yAxis.labelRotate",
 						"type": "input-number",
 						"default": "0",
-						"width": "50%"
+						"width": "25%"
 					},
 					{
-						"label": "font color",
-						"field": "yAxis.fontColor",
-						"type": "color-picker",
-						"default": "#ffffff",
-						"width": "50%"
+						"label": "margin",
+						"field": "xAxis.margin",
+						"type": "input-number",
+						"default": "0",
+						"width": "25%"
 					},
 					{
 						"label": "label location",
