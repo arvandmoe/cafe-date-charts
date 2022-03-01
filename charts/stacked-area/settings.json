@@ -12,25 +12,32 @@
 						"width": "50%"
 					},
 					{
-						"label": "grid",
-						"field": "chart.grid",
-						"type": "switch",
-						"default": false,
-						"width": "50%"
-					},
-					{
 						"label": "background",
 						"field": "chart.background",
 						"type": "color-picker",
 						"default": "#ffffff",
-						"width": "100%"
+						"width": "50%"
 					},
 					{
-						"label": "color",
-						"field": "chart.color",
-						"type": "color-picker",
-						"default": "#5470c6",
-						"width": "100%"
+						"label": "palette",
+						"field": "chart.palette",
+						"type": "select-color-palette",
+						"default": "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#F2B701,#2EC4B6,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f",
+						"width": "100%",
+						"options": [
+							{
+								"display": "first",
+								"value": "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#F2B701,#2EC4B6,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f"
+							},
+							{
+								"display": "second",
+								"value": "#11A579,#CC503E,#3969AC,#F2B701,#7F3C8D,#80BA5A,#E68310,#CF1C90,#008695,#F97B72,#4B4B8F,#A5AA99"
+							},
+							{
+								"display": "third",
+								"value": "#2C1320,#006D77,#DB5461,#E2EF70,#94C9A9,#ADA7C9,#2EC4B6,#CEDFD9,#008695,#ACAD94,#4B4B8F,#85BDA6"
+							}
+						]
 					},
 					{
 						"label": "fontWeight",
@@ -81,38 +88,6 @@
 						"field": "title.text",
 						"type": "input-text",
 						"default": "Stacked Area Chart",
-						"width": "100%"
-					},
-					{
-						"label": "top",
-						"field": "title.top",
-						"type": "input-number",
-						"default": "0",
-						"width": "25%"
-					},{
-						"label": "left",
-						"field": "title.left",
-						"type": "input-number",
-						"default": "0",
-						"width": "25%"
-					},{
-						"label": "bottom",
-						"field": "title.bottom",
-						"type": "input-number",
-						"default": "0",
-						"width": "25%"
-					},{
-						"label": "right",
-						"field": "title.right",
-						"type": "input-number",
-						"default": "0",
-						"width": "25%"
-					},
-					{
-						"label": "color",
-						"field": "title.color",
-						"type": "color-picker",
-						"default": "#000",
 						"width": "100%"
 					},
 					{
@@ -170,20 +145,6 @@
 						]
 					},
 					{
-						"label": "label",
-						"field": "xAxis.name",
-						"type": "input-text",
-						"default": "xAxis",
-						"width": "50%"
-					},
-					{
-						"label": "label",
-						"field": "xAxis.showName",
-						"type": "switch",
-						"default": false,
-						"width": "50%"
-					},
-					{
 						"label": "font size",
 						"field": "xAxis.fontSize",
 						"type": "input-number",
@@ -201,8 +162,22 @@
 						"label": "margin",
 						"field": "xAxis.margin",
 						"type": "input-number",
-						"default": "0",
+						"default": "8",
 						"width": "25%"
+					},
+					{
+						"label": "label",
+						"field": "xAxis.name",
+						"type": "input-text",
+						"default": "xAxis",
+						"width": "50%"
+					},
+					{
+						"label": "show label",
+						"field": "xAxis.showName",
+						"type": "switch",
+						"default": false,
+						"width": "50%"
 					},
 					{
 						"label": "label location",
@@ -224,13 +199,6 @@
 								"value": "end"
 							}
 						]
-					},
-					{
-						"label": "label gap",
-						"field": "xAxis.nameGap",
-						"type": "input-number",
-						"default": "28",
-						"width": "100%"
 					}
 				]
 			}
@@ -259,20 +227,6 @@
 						]
 					},
 					{
-						"label": "label",
-						"field": "yAxis.name",
-						"type": "input-text",
-						"default": "yAxis",
-						"width": "50%"
-					},
-					{
-						"label": "show label",
-						"field": "yAxis.showName",
-						"type": "switch",
-						"default": false,
-						"width": "50%"
-					},
-					{
 						"label": "font size",
 						"field": "yAxis.fontSize",
 						"type": "input-number",
@@ -280,17 +234,31 @@
 						"width": "50%"
 					},
 					{
-						"label": "label rotate",
+						"label": "rotation",
 						"field": "yAxis.labelRotate",
 						"type": "input-number",
 						"default": "0",
+						"width": "25%"
+					},
+					{
+						"label": "margin",
+						"field": "yAxis.margin",
+						"type": "input-number",
+						"default": "8",
+						"width": "25%"
+					},
+					{
+						"label": "label",
+						"field": "yAxis.name",
+						"type": "input-text",
+						"default": "xAxis",
 						"width": "50%"
 					},
 					{
-						"label": "font color",
-						"field": "yAxis.fontColor",
-						"type": "color-picker",
-						"default": "#ffffff",
+						"label": "show label",
+						"field": "yAxis.showName",
+						"type": "switch",
+						"default": false,
 						"width": "50%"
 					},
 					{
@@ -313,13 +281,6 @@
 								"value": "end"
 							}
 						]
-					},
-					{
-						"label": "label gap",
-						"field": "yAxis.nameGap",
-						"type": "input-number",
-						"default": "28",
-						"width": "100%"
 					}
 				]
 			}

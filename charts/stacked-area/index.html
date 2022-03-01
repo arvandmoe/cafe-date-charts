@@ -36,7 +36,7 @@
   let chart;
   let isChartInitialized = false;
   // todo
-  let develop = true;
+  let develop = false;
   let showLegend = true;
 
   const onWindowResize = () => {
@@ -109,7 +109,8 @@
         chart: {
           fontSize: "16",
           fontWeight: "bold",
-          color: "#5470c6",
+          palette:
+            "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#3ba272,#fc845,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f",
           background: "#ffffff",
           internalRadius: "30",
           externalRadius: "60",
@@ -119,30 +120,26 @@
           type: " false",
         },
         title: {
-          show: true,
           text: "Chart title",
           color: "#000",
           backgroundColor: "transparent",
           fontSize: "24",
           fontWeight: "normal",
-          top: "0",
-          left: "0",
-          bottom: "0",
-          right: "0",
+          textAlign: "left",
+          textVerticalAlign: "bottom",
         },
         xAxis: {
           name: "xAxis",
           showName: true,
-          fontSize: "16",
-          nameLocation: "middle",
+          fontSize: "12",
+          nameLocation: "end",
           position: "bottom",
           labelRotate: "0",
         },
         yAxis: {
-          name: "yAxis",
+          position: "left",
           showName: true,
-          fontSize: "12",
-          position: "top",
+          name: "yAxis",
           nameLocation: "end",
           labelRotate: "0",
         },
@@ -191,7 +188,7 @@
 
   const get_options = () => {
     option = {
-      color: [config.chart?.color],
+      color: config.chart.palette.split(","),
       backgroundColor: "#2A0C4E",
       textStyle: {
         fontSize: `${config.chart?.fontSize}px`,
@@ -205,11 +202,9 @@
           fontSize: `${config?.title?.fontSize}px`,
           fontWeight: config?.title?.fontWeight,
         },
-        top: config?.title?.top,
-        left: config?.title?.left,
-        bottom: config?.title?.bottom,
-        right: config?.title?.right,
         backgroundColor: config?.title?.backgroundColor,
+        // textAlign: config?.title?.textAlign,
+        // textVerticalAlign: config?.title?.textVerticalAlign,
       },
       backgroundColor: config?.chart?.background,
       tooltip: {
@@ -238,10 +233,10 @@
           position: config?.xAxis?.position,
           name: config?.xAxis?.showName && config?.xAxis?.name,
           nameLocation: config?.xAxis?.nameLocation,
-          nameGap: config?.xAxis?.nameGap,
           axisLabel: {
             fontSize: `${config?.xAxis?.fontSize}px`,
             rotate: config?.xAxis?.labelRotate,
+            margin: config?.xAxis?.margin,
           },
         },
       ],
@@ -251,10 +246,10 @@
           position: config?.yAxis?.position,
           name: config?.yAxis?.showName && config?.yAxis?.name,
           nameLocation: config?.yAxis?.nameLocation,
-          nameGap: config?.yAxis?.nameGap,
           axisLabel: {
             fontSize: `${config?.yAxis?.fontSize}px`,
             rotate: config?.yAxis?.labelRotate,
+            margin: config?.yAxis?.margin,
           },
         },
       ],
