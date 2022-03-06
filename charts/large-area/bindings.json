@@ -1,0 +1,16 @@
+[
+    {
+        "field": "labels",
+        "label": "labels",
+        "default": "A",
+        "required": true,
+        "hint": ""
+    },
+    {
+        "field": "values",
+        "label": "values",
+        "default": "B-ZZ",
+        "required": true,
+        "hint": ""
+    }
+]

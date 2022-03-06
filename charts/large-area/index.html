@@ -36,8 +36,20 @@
   let chart;
   let isChartInitialized = false;
   // todo
-  let develop = false;
+  let develop = true;
   let showLegend = true;
+
+  // Remove
+  let base = +new Date(1968, 9, 3);
+  let oneDay = 24 * 3600 * 1000;
+  let date = [];
+  data = [Math.random() * 300];
+  for (let i = 1; i < 450; i++) {
+    var now = new Date((base += oneDay));
+    date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join("/"));
+    data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
+  }
+  //////////////////////////////////////
 
   const onWindowResize = () => {
     width = document.documentElement.scrollWidth;
@@ -187,7 +199,7 @@
         Object.keys(col_rel).length &&
         Object.keys(config).length
       ) {
-        chartDom = document.getElementById("chart-wrapper");
+        chartDom = document.getElementById("chart-wrapper", );
         chart = echarts.init(chartDom, null, { renderer: "svg" });
         init_chart();
         isChartInitialized = true;
@@ -206,6 +218,12 @@
         fontSize: `${config.chart?.fontSize}px`,
         fontWeight: config.chart?.fontWeight,
       },
+      tooltip: {
+        trigger: "axis",
+        position: function (pt) {
+          return [pt[0], "10%"];
+        },
+      },
       title: {
         show: config?.title?.show,
         text: config?.title?.text,
@@ -220,31 +238,19 @@
         right: config?.title?.right,
         backgroundColor: config?.title?.backgroundColor,
       },
-      tooltip: {
-        trigger: "axis",
-        axisPointer: {
-          type: "cross",
-          label: {
-            backgroundColor: "#6a7985",
-          },
-        },
-      },
-      legend: {
-        show: config?.legend?.show,
-        align: config?.legend?.align,
-        itemGap: config?.legend?.itemGap,
-        data: source[1],
-      },
       toolbox: {
         feature: {
-          // saveAsImage: {},
+          // dataZoom: {
+          //   yAxisIndex: "none",
+          // },
+          restore: {},
         },
       },
       xAxis: [
         {
           type: "category",
           boundaryGap: false,
-          data: source[0].filter((item, index) => index > 0),
+          data: date,
           position: config?.xAxis?.position,
           name: config?.xAxis?.showName && config?.xAxis?.name,
           nameLocation: config?.xAxis?.nameLocation,
@@ -268,25 +274,52 @@
             rotate: config?.yAxis?.labelRotate,
             margin: config?.yAxis?.margin,
           },
+          axisTick: {
+            show: true,
+          },
+          axisLine: {
+            show: true,
+          },
+          boundaryGap: [0, "100%"],
+          splitLine: {
+            show: false,
+          },
+        },
+      ],
+      dataZoom: [
+        {
+          type: "inside",
+          start: 0,
+          end: 40,
+        },
+        {
+          start: 0,
+          end: 20,
         },
       ],
       series: [
-        ...source.map((element, index) => {
-          if (index > 0) {
-            const title = element[0];
-            const data = element.slice(1, element.length);
-            return {
-              name: title,
-              type: "line",
-              stack: "Total",
-              areaStyle: {},
-              emphasis: {
-                focus: "series",
+        {
+          name: "Data",
+          type: "line",
+          symbol: "none",
+          sampling: "lttb",
+          itemStyle: {
+            color: "rgb(255, 70, 131)",
+          },
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0,
+                color: "rgb(255, 158, 68)",
               },
-              data: data,
-            };
-          }
-        }),
+              {
+                offset: 1,
+                color: "rgb(255, 70, 131)",
+              },
+            ]),
+          },
+          data: data,
+        },
       ],
     };
     return option;

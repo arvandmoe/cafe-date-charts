@@ -1,0 +1,162 @@
+<style>
+  body,
+  html {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  .chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<div id="chart-wrapper" class="chart-wrapper"></div>
+
+<script src="/charts/js/base-cafedata/v1.0.0.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.0/echarts.min.js"></script>
+<script src="https://d3js.org/d3-collection.v1.min.js"></script>
+
+<script>
+  let option;
+  let chart;
+  let chartDom;
+
+  const updateOptionsStyles = () => {
+    const options = {
+      backgroundColor: config?.chart?.background,
+      title: {
+        show: config?.title?.show,
+        text: config?.title?.text,
+        subtext: config?.subtext?.text,
+        left: config?.title?.align,
+        textStyle: {
+          textBorderType: config?.title?.textBorderType,
+          color: config?.title?.color
+        },
+        subtextStyle: {
+          color: config?.subtext?.color
+        }
+      },
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        show: config?.legend?.show,
+        orient: config?.legend?.orient,
+        left: config?.legend?.align,
+        padding: Number(config?.legend?.padding),
+        itemGap: Number(config?.legend?.itemGap)
+      },
+      series: [
+        {
+          roseType: stringToBoll(config?.chart?.type),
+          radius: [
+            `${config?.chart?.internalRadius}%`,
+            `${config?.chart?.externalRadius}%`
+          ],
+          avoidLabelOverlap: true,
+          itemStyle: {
+            borderRadius: config?.chart?.borderRadius,
+            borderColor: config?.chart?.borderColor,
+            borderWidth: config?.chart?.borderWidth
+          },
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }
+      ]
+    }
+    chart.setOption(options)
+  }
+
+  const init_handler = () => {
+    chartDom = document.getElementById('chart-wrapper');
+    chart = echarts.init(chartDom);
+    console.log('init_handler', {
+      width,
+      height,
+      col_rel,
+      config,
+      old_config,
+      data
+    })
+    const options = data.group.map(d => {
+      return {
+        dataset: {
+          source: d.values
+        }
+      }
+    })
+    option = {
+      timeline: {
+        autoPlay: true,
+        realtime: true,
+        axisType: 'category',
+        controlStyle: {
+          showNextBtn: false,
+          showPrevBtn: false
+        },
+        playInterval: 1000,
+        symbol: 'none',
+        data: [...data?.cols]
+      },
+      series: [
+        {
+          type: 'pie',
+          encode: {
+            value: col_rel?.values,
+            itemName: col_rel?.labels
+          }
+        }
+      ],
+      options: options
+    }
+    chart.setOption(option)
+    updateOptionsStyles()
+  }
+
+  const change_config_handler = () => {
+    if (!chart) return
+    updateOptionsStyles()
+  }
+
+  const transformData = async newData => {
+    console.log(col_rel);
+    const group = d3
+        .nest()
+        .key(function (d) {
+          return d[col_rel?.rowFilter]
+        })
+        .entries(newData)
+        .sort(function (b, a) {
+          return a.key - b.key
+        })
+        .filter(col => {
+          if (col.key !== ' ' && col.key !== '') {
+            return col
+          }
+        })
+        .reverse();
+      const cols = group.map(col => col.key)
+    return {
+      group,
+      cols,
+    }
+  }
+
+  const resizeHandler = () => {
+    chart?.resize({
+      width: width,
+      height: height
+    })
+  }
+
+</script>

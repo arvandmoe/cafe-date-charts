@@ -12,13 +12,6 @@
 						"width": "50%"
 					},
 					{
-						"label": "grid",
-						"field": "chart.grid",
-						"type": "switch",
-						"default": false,
-						"width": "50%"
-					},
-					{
 						"label": "background",
 						"field": "chart.background",
 						"type": "color-picker",
@@ -80,7 +73,7 @@
 						"label": "title",
 						"field": "title.text",
 						"type": "input-text",
-						"default": "Stacked Area Chart",
+						"default": "Large Area Chart",
 						"width": "100%"
 					},
 					{
@@ -195,7 +188,7 @@
 		]
 	},
 	{
-		"name": "X axis",
+		"name": "xAxis",
 		"rows": [
 			{
 				"components": [
@@ -217,20 +210,6 @@
 						]
 					},
 					{
-						"label": "label",
-						"field": "xAxis.name",
-						"type": "input-text",
-						"default": "xAxis",
-						"width": "50%"
-					},
-					{
-						"label": "label",
-						"field": "xAxis.showName",
-						"type": "switch",
-						"default": false,
-						"width": "50%"
-					},
-					{
 						"label": "font size",
 						"field": "xAxis.fontSize",
 						"type": "input-number",
@@ -248,8 +227,22 @@
 						"label": "margin",
 						"field": "xAxis.margin",
 						"type": "input-number",
-						"default": "0",
+						"default": "10",
 						"width": "25%"
+					},
+					{
+						"label": "label",
+						"field": "xAxis.name",
+						"type": "input-text",
+						"default": "xAxis",
+						"width": "50%"
+					},
+					{
+						"label": "label",
+						"field": "xAxis.showName",
+						"type": "switch",
+						"default": false,
+						"width": "50%"
 					},
 					{
 						"label": "label location",
@@ -284,7 +277,7 @@
 		]
 	},
 	{
-		"name": "Y axis",
+		"name": "yAxis",
 		"rows": [
 			{
 				"components": [
@@ -323,25 +316,25 @@
 						"label": "margin",
 						"field": "yAxis.margin",
 						"type": "input-number",
-						"default": "0",
+						"default": "10",
 						"width": "25%"
 					},
 					{
-						"label": "axis title",
+						"label": "label",
 						"field": "yAxis.name",
 						"type": "input-text",
 						"default": "yAxis",
 						"width": "50%"
 					},
 					{
-						"label": "title",
+						"label": "label",
 						"field": "yAxis.showName",
 						"type": "switch",
 						"default": false,
 						"width": "50%"
 					},
 					{
-						"label": "title location",
+						"label": "label location",
 						"field": "yAxis.nameLocation",
 						"type": "radio-button",
 						"default": "end",
@@ -362,7 +355,7 @@
 						]
 					},
 					{
-						"label": "title margin",
+						"label": "label gap",
 						"field": "yAxis.nameGap",
 						"type": "input-number",
 						"default": "28",
