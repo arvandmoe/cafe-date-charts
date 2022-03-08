@@ -1,0 +1,270 @@
+<style>
+  body,
+  html {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  .chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<div id="chart-wrapper" class="chart-wrapper"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.0/echarts.min.js"></script>
+<script src="https://d3js.org/d3-collection.v1.min.js"></script>
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<script src="https://cafedata.io/charts/js/base-cafedata/v1.0.0.js"></script>
+
+<script>
+  let option;
+  let chart;
+  let chartDom;
+
+  let dataTopics;
+  let isRight;
+  const seriesList = [];
+  const datasetWithFilters = [];
+
+  // TODO : set develop to false
+  let develop = true;
+  if (develop) {
+    window.onload = () => {
+      d3.csv("./data.csv", (data) => {
+        base_first_time({
+          _col_rel: {
+            labels: "Country",
+            xvalues: "Year",
+            yvalues: "Income",
+          },
+          _config: {
+            chart: {
+              fontSize: 12,
+              background: "yellow",
+              fontWeight: "bold",
+            },
+            title: {
+              show: true,
+              text: "Chart title",
+              color: "#000",
+              backgroundColor: "transparent",
+              fontSize: "24",
+              fontWeight: "normal",
+              top: "0",
+              left: "0",
+            },
+
+            legend: {
+              show: true,
+              align: "right",
+              orient: "vertical",
+            },
+            xAxis: {
+              name: "xAxis",
+              showName: true,
+              fontSize: "14",
+              nameLocation: "middle",
+              position: "bottom",
+              labelRotate: "0",
+              nameGap: 24,
+              margin: 8,
+            },
+            yAxis: {
+              name: "yAxis",
+              showName: true,
+              fontSize: "12",
+              position: "top",
+              nameLocation: "middle",
+              nameGap: 30,
+              labelRotate: "0",
+              margin: 25,
+            },
+          },
+          _data: data,
+        });
+      });
+    };
+  }
+
+  const updateOptionsStyles = () => {
+    console.log("updateOptionsStyles", {
+      width,
+      height,
+      col_rel,
+      config,
+      old_config,
+      data,
+    });
+    option = {
+      // backgroundColor: "red",
+      dataset: [
+        {
+          id: "dataset_raw",
+          source: data,
+        },
+        ...datasetWithFilters,
+      ],
+      series: seriesList,
+    };
+    // chart.setOption(option);
+  };
+
+  setTimeout(() => {
+    isRight = true;
+    updateOptionsStyles();
+  }, 3000);
+
+  const init_handler = () => {
+    chartDom = document.getElementById("chart-wrapper");
+    chart = echarts.init(chartDom);
+    console.log("init_handler", {
+      width,
+      height,
+      col_rel,
+      config,
+      old_config,
+      data,
+    });
+
+    echarts.util.each(dataTopics, function (country) {
+      var datasetId = "dataset_" + country;
+      datasetWithFilters.push({
+        id: datasetId,
+        fromDatasetId: "dataset_raw",
+        transform: {
+          type: "filter",
+          config: {
+            and: [
+              { dimension: "Year", gte: 1950 },
+              { dimension: "Country", "=": country },
+            ],
+          },
+        },
+      });
+      seriesList.push({
+        type: "line",
+        datasetId: datasetId,
+        showSymbol: false,
+        name: country,
+        endLabel: {
+          show: true,
+          formatter: function (params) {
+            return params.value[3] + ": " + params.value[0];
+          },
+        },
+        labelLayout: {
+          moveOverlap: "shiftY",
+        },
+        emphasis: {
+          focus: "series",
+        },
+        encode: {
+          x: col_rel.xvalues,
+          y: col_rel.yvalues,
+          label: [col_rel.labels, col_rel.yvalues],
+          itemName: col_rel.xvalues,
+          tooltip: [col_rel.yvalues],
+        },
+      });
+    });
+    option = {
+      animationDuration: 10000,
+      title: {
+        show: config?.title?.show,
+        text: config?.title?.text,
+        textStyle: {
+          color: config?.title?.color,
+          fontSize: `${config?.title?.fontSize}px`,
+          fontWeight: config?.title?.fontWeight,
+        },
+        top: config?.title?.top,
+        left: config?.title?.left,
+        bottom: config?.title?.bottom,
+        right: config?.title?.right,
+        backgroundColor: config?.title?.backgroundColor,
+      },
+      dataset: [
+        {
+          id: "dataset_raw",
+          source: data,
+        },
+        ...datasetWithFilters,
+      ],
+      tooltip: {
+        order: "valueDesc",
+        trigger: "axis",
+      },
+      xAxis: {
+        type: "category",
+        nameLocation: "middle",
+        position: config?.xAxis?.position,
+        name: config?.xAxis?.showName && config?.xAxis?.name,
+        nameLocation: config?.xAxis?.nameLocation,
+        nameGap: config?.xAxis?.nameGap,
+        axisLabel: {
+          fontSize: `${config?.xAxis?.fontSize}px`,
+          rotate: config?.xAxis?.labelRotate,
+          margin: config?.xAxis?.margin,
+        },
+      },
+      yAxis: {
+        name: "Income",
+        position: config?.yAxis?.position,
+        name: config?.yAxis?.showName && config?.yAxis?.name,
+        nameLocation: config?.yAxis?.nameLocation,
+        nameGap: config?.yAxis?.nameGap,
+        axisLabel: {
+          fontSize: `${config?.yAxis?.fontSize}px`,
+          rotate: config?.yAxis?.labelRotate,
+          margin: config?.yAxis?.margin,
+        },
+      },
+      legend: {
+        show: config?.legend.show,
+        orient: "horizontal",
+        align: "left",
+        left: 0,
+      },
+      grid: {
+        right: 140,
+      },
+      margin: 100,
+      series: seriesList,
+    };
+    chart.setOption(option);
+  };
+
+  const change_config_handler = () => {
+    if (!chart) return;
+    updateOptionsStyles();
+  };
+
+  const transformData = async (newData) => {
+    // TODO: remove index<
+    dataTopics = await [
+      ...new Set(
+        newData
+          // .filter((el, index) => index < 5)
+          .map((item, index) => item[col_rel.labels])
+      ),
+    ];
+    let data = [
+      [...Object.keys(newData[0])],
+      ...newData.map((el) => Object.values(el)),
+    ];
+    return data;
+  };
+
+  const resizeHandler = () => {
+    chart?.resize({
+      width: width,
+      height: height,
+    });
+  };
+</script>

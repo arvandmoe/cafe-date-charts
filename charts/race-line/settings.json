@@ -1,0 +1,354 @@
+[
+	{
+		"name": "chart",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "font size",
+						"field": "chart.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%"
+					},
+					{
+						"label": "background",
+						"field": "chart.background",
+						"type": "color-picker",
+						"default": "#ffffff",
+						"width": "100%"
+					},
+					{
+						"label": "color",
+						"field": "chart.color",
+						"type": "color-picker",
+						"default": "#5470c6",
+						"width": "100%"
+					},
+					{
+						"label": "fontWeight",
+						"field": "chart.fontWeight",
+						"type": "radio-button",
+						"default": "normal",
+						"width": "100%",
+						"options": [
+							{
+								"display": "lighter",
+								"value": "lighter"
+							},
+							{
+								"display": "normal",
+								"value": "normal"
+							},
+							{
+								"display": "bold",
+								"value": "bold"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "title",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "font size",
+						"field": "title.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%"
+					},
+					{
+						"label": "show",
+						"field": "title.show",
+						"type": "switch",
+						"default": false,
+						"width": "50%"
+					},
+					{
+						"label": "title",
+						"field": "title.text",
+						"type": "input-text",
+						"default": "Large Area Chart",
+						"width": "100%"
+					},
+					{
+						"label": "top",
+						"field": "title.top",
+						"type": "input-number",
+						"default": "0",
+						"width": "50%"
+					},
+					{
+						"label": "left",
+						"field": "title.left",
+						"type": "input-number",
+						"default": "0",
+						"width": "50%"
+					},
+					{
+						"label": "color",
+						"field": "title.color",
+						"type": "color-picker",
+						"default": "#000",
+						"width": "100%"
+					},
+					{
+						"label": "backgroundColor",
+						"field": "title.backgroundColor",
+						"type": "color-picker",
+						"default": "transparent",
+						"width": "100%"
+					},
+					{
+						"label": "fontWeight",
+						"field": "title.fontWeight",
+						"type": "radio-button",
+						"default": "normal",
+						"width": "100%",
+						"options": [
+							{
+								"display": "lighter",
+								"value": "lighter"
+							},
+							{
+								"display": "normal",
+								"value": "normal"
+							},
+							{
+								"display": "bold",
+								"value": "bold"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "legend",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "align",
+						"field": "legend.align",
+						"type": "radio-button",
+						"default": "auto",
+						"width": "100%",
+						"options": [
+							{
+								"display": "left",
+								"value": "left"
+							},
+							{
+								"display": "auto",
+								"value": "auto"
+							},
+							{
+								"display": "right",
+								"value": "right"
+							}
+						]
+					},
+					{
+						"label": "item gap",
+						"field": "legend.itemGap",
+						"type": "input-number",
+						"default": "10",
+						"width": "50%"
+					},
+					{
+						"label": "legend",
+						"field": "legend.show",
+						"type": "switch",
+						"default": false,
+						"width": "50%"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "xAxis",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "position",
+						"field": "xAxis.position",
+						"type": "radio-button",
+						"default": "bottom",
+						"width": "100%",
+						"options": [
+							{
+								"display": "top",
+								"value": "top"
+							},
+							{
+								"display": "bottom",
+								"value": "bottom"
+							}
+						]
+					},
+					{
+						"label": "font size",
+						"field": "xAxis.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%"
+					},
+					{
+						"label": "rotation",
+						"field": "xAxis.labelRotate",
+						"type": "input-number",
+						"default": "0",
+						"width": "25%"
+					},
+					{
+						"label": "margin",
+						"field": "xAxis.margin",
+						"type": "input-number",
+						"default": "10",
+						"width": "25%"
+					},
+					{
+						"label": "label",
+						"field": "xAxis.name",
+						"type": "input-text",
+						"default": "xAxis",
+						"width": "50%"
+					},
+					{
+						"label": "label",
+						"field": "xAxis.showName",
+						"type": "switch",
+						"default": false,
+						"width": "50%"
+					},
+					{
+						"label": "label location",
+						"field": "xAxis.nameLocation",
+						"type": "radio-button",
+						"default": "end",
+						"width": "100%",
+						"options": [
+							{
+								"display": "start",
+								"value": "start"
+							},
+							{
+								"display": "middle",
+								"value": "middle"
+							},
+							{
+								"display": "end",
+								"value": "end"
+							}
+						]
+					},
+					{
+						"label": "label gap",
+						"field": "xAxis.nameGap",
+						"type": "input-number",
+						"default": "28",
+						"width": "100%"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "yAxis",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "position",
+						"field": "yAxis.position",
+						"type": "radio-button",
+						"default": "left",
+						"width": "100%",
+						"options": [
+							{
+								"display": "left",
+								"value": "left"
+							},
+							{
+								"display": "right",
+								"value": "right"
+							}
+						]
+					},
+					{
+						"label": "font size",
+						"field": "yAxis.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%"
+					},
+					{
+						"label": "rotation",
+						"field": "yAxis.labelRotate",
+						"type": "input-number",
+						"default": "0",
+						"width": "25%"
+					},
+					{
+						"label": "margin",
+						"field": "yAxis.margin",
+						"type": "input-number",
+						"default": "10",
+						"width": "25%"
+					},
+					{
+						"label": "label",
+						"field": "yAxis.name",
+						"type": "input-text",
+						"default": "yAxis",
+						"width": "50%"
+					},
+					{
+						"label": "label",
+						"field": "yAxis.showName",
+						"type": "switch",
+						"default": false,
+						"width": "50%"
+					},
+					{
+						"label": "label location",
+						"field": "yAxis.nameLocation",
+						"type": "radio-button",
+						"default": "end",
+						"width": "100%",
+						"options": [
+							{
+								"display": "start",
+								"value": "start"
+							},
+							{
+								"display": "middle",
+								"value": "middle"
+							},
+							{
+								"display": "end",
+								"value": "end"
+							}
+						]
+					},
+					{
+						"label": "label gap",
+						"field": "yAxis.nameGap",
+						"type": "input-number",
+						"default": "28",
+						"width": "100%"
+					}
+				]
+			}
+		]
+	}
+]

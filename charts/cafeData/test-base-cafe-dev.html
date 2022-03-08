@@ -1,0 +1,46 @@
+<div>
+  <h1>hi man</h1>
+</div>
+
+<script src="./v1.0.0.js"></script>
+
+<script>
+  window.onload = () => {
+    base_first_time({
+      _col_rel: { value: "value", title: "name" },
+      _config: {
+        "chart.title.color": "#111",
+      },
+      _data: [{ year: "1900", name: "iran", value: "400" }],
+    });
+  };
+  const transformData = async (newData) => {
+    return newData;
+  };
+
+  const init_handler = () => {
+    console.log("init_handler", {
+      width,
+      height,
+      col_rel,
+      config,
+      old_config,
+      data,
+    });
+  };
+
+  const change_config_handler = () => {
+    console.log("change_config_handler", {
+      width,
+      height,
+      col_rel,
+      config,
+      old_config,
+      data,
+    });
+  };
+
+  const resizeHandler = () => {
+    console.log("resizeHandler", { width, height });
+  };
+</script>
