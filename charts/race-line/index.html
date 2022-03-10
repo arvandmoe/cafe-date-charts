@@ -59,11 +59,18 @@
               top: "0",
               left: "0",
             },
-
             legend: {
               show: true,
-              align: "right",
-              orient: "vertical",
+              orient: "horizontal",
+              vertical: "top",
+              horizontal: "left",
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              color: "red",
+              fontSize: 12,
+              fontWeight: "bold",
             },
             xAxis: {
               name: "xAxis",
@@ -173,6 +180,24 @@
         },
       });
     });
+    const options = dataTopics.map((country) => {
+      var datasetId = "dataset_" + country;
+      return {
+        dataset: {
+          id: datasetId,
+          fromDatasetId: "dataset_raw",
+          transform: {
+            type: "filter",
+            config: {
+              and: [
+                { dimension: "Year", gte: 1950 },
+                { dimension: "Country", "=": country },
+              ],
+            },
+          },
+        },
+      };
+    });
     option = {
       animationDuration: 10000,
       title: {
@@ -227,15 +252,30 @@
       },
       legend: {
         show: config?.legend.show,
-        orient: "horizontal",
-        align: "left",
-        left: 0,
+        orient: config?.legend.orient,
+        top: config?.legend.vertical == "top" ? config?.legend.top : undefined,
+        right:
+          config?.legend.horizontal !== "right"
+            ? config?.legend.right
+            : undefined,
+        bottom:
+          config?.legend.vertical == "bottom"
+            ? config?.legend.bottom
+            : undefined,
+        left:
+          config?.legend.horizontal == "left" ? config?.legend.left : undefined,
+        textStyle: {
+          color: config?.legend.color,
+          fontSize: config?.legend.fontSize,
+          fontWeight: config?.legend.fontWeight,
+        },
       },
       grid: {
         right: 140,
       },
       margin: 100,
       series: seriesList,
+      options: options,
     };
     chart.setOption(option);
   };

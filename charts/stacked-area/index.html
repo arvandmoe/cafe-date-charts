@@ -26,6 +26,8 @@
   let chartDom;
   let chart;
 
+  let dataTopics;
+
   // TODO : set develop to false
   let develop = false;
   if (develop) {
@@ -59,6 +61,19 @@
               textAlign: "left",
               textVerticalAlign: "bottom",
             },
+            legend: {
+              show: true,
+              orient: "horizontal",
+              vertical: "top",
+              horizontal: "left",
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              color: "#000",
+              fontSize: 12,
+              fontWeight: "bold",
+            },
             xAxis: {
               name: "xAxis",
               showName: true,
@@ -77,13 +92,6 @@
             subtext: {
               text: "hi man sd",
               color: "#ffffff",
-            },
-            legend: {
-              show: true,
-              orient: "horizontal",
-              align: "left",
-              padding: "10",
-              itemGap: "10",
             },
           },
           _data: data,
@@ -136,8 +144,24 @@
         },
       },
       legend: {
-        show: true,
-        data: data[0],
+        show: config?.legend.show,
+        orient: config?.legend.orient,
+        top: config?.legend.vertical == "top" ? config?.legend.top : undefined,
+        right:
+          config?.legend.horizontal == "right"
+            ? config?.legend.right
+            : undefined,
+        bottom:
+          config?.legend.vertical == "bottom"
+            ? config?.legend.bottom
+            : undefined,
+        left:
+          config?.legend.horizontal == "left" ? config?.legend.left : undefined,
+        textStyle: {
+          color: config?.legend.color,
+          fontSize: config?.legend.fontSize,
+          fontWeight: config?.legend.fontWeight,
+        },
       },
       toolbox: {
         feature: {
@@ -210,15 +234,6 @@
       result.push([...Object.values(element)]);
     });
     return result;
-  };
-
-  const waitUntil = (callback) => {
-    const _t = setInterval(() => {
-      const r = callback();
-      if (r === true) {
-        clearInterval(_t);
-      }
-    }, 100);
   };
 
   const resizeHandler = () => {
