@@ -1,0 +1,452 @@
+[
+	{
+		"name": "chart",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "font size",
+						"field": "chart.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%"
+					},
+					{
+						"label": "background",
+						"field": "chart.background",
+						"type": "color-picker",
+						"default": "#ffffff",
+						"width": "50%"
+					},
+					{
+						"label": "palette",
+						"field": "chart.palette",
+						"type": "select-color-palette",
+						"default": "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#F2B701,#2EC4B6,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f",
+						"width": "100%",
+						"options": [
+							{
+								"display": "first",
+								"value": "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#F2B701,#2EC4B6,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f"
+							},
+							{
+								"display": "second",
+								"value": "#11A579,#CC503E,#3969AC,#F2B701,#7F3C8D,#80BA5A,#E68310,#CF1C90,#008695,#F97B72,#4B4B8F,#A5AA99"
+							},
+							{
+								"display": "third",
+								"value": "#2C1320,#006D77,#DB5461,#E2EF70,#94C9A9,#ADA7C9,#2EC4B6,#CEDFD9,#008695,#ACAD94,#4B4B8F,#85BDA6"
+							}
+						]
+					},
+					{
+						"label": "fontWeight",
+						"field": "chart.fontWeight",
+						"type": "radio-button",
+						"default": "normal",
+						"width": "100%",
+						"options": [
+							{
+								"display": "lighter",
+								"value": "lighter"
+							},
+							{
+								"display": "normal",
+								"value": "normal"
+							},
+							{
+								"display": "bold",
+								"value": "bold"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "title",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "show",
+						"field": "title.show",
+						"type": "switch",
+						"default": false,
+						"width": "100%"
+					},
+					{
+						"label": "title",
+						"field": "title.text",
+						"type": "input-text",
+						"default": "Basic Heatmap Chart",
+						"width": "100%",
+						"show_if": {
+							"title.show": true
+						}
+					},
+					{
+						"label": "color",
+						"field": "title.color",
+						"type": "color-picker",
+						"default": "black",
+						"width": "100%",
+						"show_if": {
+							"title.show": true
+						}
+					},
+					{
+						"label": "font size",
+						"field": "title.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%",
+						"show_if": {
+							"title.show": true
+						}
+					},
+					{
+						"label": "backgroundColor",
+						"field": "title.backgroundColor",
+						"type": "color-picker",
+						"default": "transparent",
+						"width": "50%",
+						"show_if": {
+							"title.show": true
+						}
+					},
+					{
+						"label": "fontWeight",
+						"field": "title.fontWeight",
+						"type": "radio-button",
+						"default": "normal",
+						"width": "100%",
+						"options": [
+							{
+								"display": "lighter",
+								"value": "lighter"
+							},
+							{
+								"display": "normal",
+								"value": "normal"
+							},
+							{
+								"display": "bold",
+								"value": "bold"
+							}
+						],
+						"show_if": {
+							"title.show": true
+						}
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "legend",
+		"rows": [
+			{
+				"name": "position",
+				"components": [
+					{
+						"label": "show legend",
+						"field": "legend.show",
+						"type": "switch",
+						"default": false,
+						"width": "100%"
+					},
+					{
+						"label": "orient",
+						"field": "legend.orient",
+						"type": "radio-button",
+						"default": "horizontal",
+						"width": "100%",
+						"options": [
+							{
+								"display": "horizontal",
+								"value": "horizontal"
+							},
+							{
+								"display": "vertical",
+								"value": "vertical"
+							}
+						]
+					},
+					{
+						"label": "vertical alignment",
+						"field": "legend.vertical",
+						"type": "radio-button",
+						"default": "top",
+						"width": "100%",
+						"options": [
+							{
+								"display": "top",
+								"value": "top"
+							},
+							{
+								"display": "bottom",
+								"value": "bottom"
+							}
+						]
+					},
+					{
+						"label": "horizontal alignment",
+						"field": "legend.horizontal",
+						"type": "radio-button",
+						"default": "right",
+						"width": "100%",
+						"options": [
+							{
+								"display": "left",
+								"value": "left"
+							},
+							{
+								"display": "right",
+								"value": "right"
+							}
+						]
+					},
+					{
+						"label": "top",
+						"field": "legend.top",
+						"type": "input-number",
+						"default": "0",
+						"width": "50%",
+						"show_if": {
+							"legend.vertical": "top"
+						}
+					},
+					{
+						"label": "bottom",
+						"field": "legend.bottom",
+						"type": "input-number",
+						"default": "0",
+						"width": "50%",
+						"show_if": {
+							"legend.vertical": "bottom"
+						}
+					},
+					{
+						"label": "right",
+						"field": "legend.right",
+						"type": "input-number",
+						"default": "0",
+						"width": "50%",
+						"show_if": {
+							"legend.horizontal": "right"
+						}
+					},
+					{
+						"label": "left",
+						"field": "legend.left",
+						"type": "input-number",
+						"default": "0",
+						"width": "50%",
+						"show_if": {
+							"legend.horizontal": "left"
+						}
+					}
+				]
+			},
+			{
+				"name": "text style",
+				"components": [
+					{
+						"label": "font size",
+						"field": "legend.fontSize",
+						"type": "input-number",
+						"default": "10",
+						"width": "50%"
+					},
+					{
+						"label": "color",
+						"field": "legend.color",
+						"type": "color-picker",
+						"default": "#000",
+						"width": "50%"
+					},
+					{
+						"label": "fontWeight",
+						"field": "legend.fontWeight",
+						"type": "radio-button",
+						"default": "normal",
+						"width": "100%",
+						"options": [
+							{
+								"display": "lighter",
+								"value": "lighter"
+							},
+							{
+								"display": "normal",
+								"value": "normal"
+							},
+							{
+								"display": "bold",
+								"value": "bold"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "xAxis",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "position",
+						"field": "xAxis.position",
+						"type": "radio-button",
+						"default": "bottom",
+						"width": "100%",
+						"options": [
+							{
+								"display": "top",
+								"value": "top"
+							},
+							{
+								"display": "bottom",
+								"value": "bottom"
+							}
+						]
+					},
+					{
+						"label": "font size",
+						"field": "xAxis.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%"
+					},
+					{
+						"label": "rotation",
+						"field": "xAxis.labelRotate",
+						"type": "input-number",
+						"default": "0",
+						"width": "25%"
+					},
+					{
+						"label": "margin",
+						"field": "xAxis.margin",
+						"type": "input-number",
+						"default": "8",
+						"width": "25%"
+					},
+					{
+						"label": "label",
+						"field": "xAxis.name",
+						"type": "input-text",
+						"default": "xAxis",
+						"width": "50%"
+					},
+					{
+						"label": "show label",
+						"field": "xAxis.showName",
+						"type": "switch",
+						"default": false,
+						"width": "50%"
+					},
+					{
+						"label": "label location",
+						"field": "xAxis.nameLocation",
+						"type": "radio-button",
+						"default": "end",
+						"width": "100%",
+						"options": [
+							{
+								"display": "start",
+								"value": "start"
+							},
+							{
+								"display": "middle",
+								"value": "middle"
+							},
+							{
+								"display": "end",
+								"value": "end"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "yAxis",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "position",
+						"field": "yAxis.position",
+						"type": "radio-button",
+						"default": "left",
+						"width": "100%",
+						"options": [
+							{
+								"display": "left",
+								"value": "left"
+							},
+							{
+								"display": "right",
+								"value": "right"
+							}
+						]
+					},
+					{
+						"label": "rotation",
+						"field": "yAxis.labelRotate",
+						"type": "input-number",
+						"default": "0",
+						"width": "25%"
+					},
+					{
+						"label": "margin",
+						"field": "yAxis.margin",
+						"type": "input-number",
+						"default": "8",
+						"width": "25%"
+					},
+					{
+						"label": "label",
+						"field": "yAxis.name",
+						"type": "input-text",
+						"default": "xAxis",
+						"width": "50%"
+					},
+					{
+						"label": "show label",
+						"field": "yAxis.showName",
+						"type": "switch",
+						"default": false,
+						"width": "50%"
+					},
+					{
+						"label": "label location",
+						"field": "yAxis.nameLocation",
+						"type": "radio-button",
+						"default": "end",
+						"width": "100%",
+						"options": [
+							{
+								"display": "start",
+								"value": "start"
+							},
+							{
+								"display": "middle",
+								"value": "middle"
+							},
+							{
+								"display": "end",
+								"value": "end"
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]

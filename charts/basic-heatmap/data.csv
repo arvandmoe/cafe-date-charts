@@ -1,0 +1,29 @@
+﻿Country,What,Value
+Saturday,Water stress,1
+Saturday,Drought,2
+Saturday,Heatwave,3
+Saturday,Recession,5
+Friday,Water stress,3
+Friday,Drought,2
+Friday,Heatwave,3
+Friday,Recession,5
+Thursday,Water stress,2
+Thursday,Drought,2
+Thursday,Heatwave,1
+Thursday,Recession,3
+Wednesday,Water stress,2
+Wednesday,Drought,3
+Wednesday,Heatwave,5
+Wednesday,Recession,3
+Tuesday,Water stress,2
+Tuesday,Drought,5
+Tuesday,Heatwave,1
+Tuesday,Recession,5
+Monday,Water stress,5
+Monday,Drought,1
+Monday,Heatwave,5
+Monday,Recession,3
+Sunday,Water stress,5
+Sunday,Drought,1
+Sunday,Heatwave,2
+Sunday,Recession,3

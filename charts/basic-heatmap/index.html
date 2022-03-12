@@ -26,7 +26,10 @@
   let chartDom;
   let chart;
 
-  let dataTopics;
+  let xdata;
+  let ydata;
+  let dataValues;
+  let dataMax;
 
   // TODO : set develop to false
   let develop = true;
@@ -35,8 +38,9 @@
       d3.csv("./data.csv", (data) => {
         base_first_time({
           _col_rel: {
-            labels: "category",
-            values: "Mon",
+            x: "Country",
+            y: "What",
+            value: "Value",
           },
           _config: {
             chart: {
@@ -115,12 +119,6 @@
 
   const get_options = () => {
     option = {
-      color: config.chart.palette.split(","),
-      backgroundColor: "#2A0C4E",
-      textStyle: {
-        fontSize: `${config.chart?.fontSize}px`,
-        fontWeight: config.chart?.fontWeight,
-      },
       title: {
         show: config?.title?.show,
         text: config?.title?.text,
@@ -130,89 +128,51 @@
           fontWeight: config?.title?.fontWeight,
         },
         backgroundColor: config?.title?.backgroundColor,
-        // textAlign: config?.title?.textAlign,
-        // textVerticalAlign: config?.title?.textVerticalAlign,
       },
       backgroundColor: config?.chart?.background,
       tooltip: {
-        trigger: "axis",
-        axisPointer: {
-          type: "cross",
-          label: {
-            backgroundColor: "#6a7985",
-          },
+        position: "top",
+      },
+      grid: {
+        height: "60%",
+        top: "10%",
+      },
+      xAxis: {
+        type: "category",
+        data: xdata,
+        splitArea: {
+          show: true,
         },
       },
-      legend: {
-        show: config?.legend.show,
-        orient: config?.legend.orient,
-        top: config?.legend.vertical == "top" ? config?.legend.top : undefined,
-        right:
-          config?.legend.horizontal == "right"
-            ? config?.legend.right
-            : undefined,
-        bottom:
-          config?.legend.vertical == "bottom"
-            ? config?.legend.bottom
-            : undefined,
-        left:
-          config?.legend.horizontal == "left" ? config?.legend.left : undefined,
-        textStyle: {
-          color: config?.legend.color,
-          fontSize: config?.legend.fontSize,
-          fontWeight: config?.legend.fontWeight,
+      yAxis: {
+        type: "category",
+        data: ydata,
+        splitArea: {
+          show: true,
         },
       },
-      toolbox: {
-        feature: {
-          // saveAsImage: {},
-        },
+      visualMap: {
+        min: Math.min(...dataValues),
+        max: Math.max(...dataValues),
+        calculable: true,
+        orient: "horizontal",
+        left: "center",
+        bottom: "15%",
       },
-      xAxis: [
-        {
-          type: "category",
-          boundaryGap: false,
-          data: data[0].filter((item, index) => index > 0),
-          position: config?.xAxis?.position,
-          name: config?.xAxis?.showName && config?.xAxis?.name,
-          nameLocation: config?.xAxis?.nameLocation,
-          axisLabel: {
-            fontSize: `${config?.xAxis?.fontSize}px`,
-            rotate: config?.xAxis?.labelRotate,
-            margin: config?.xAxis?.margin,
-          },
-        },
-      ],
-      yAxis: [
-        {
-          type: "value",
-          position: config?.yAxis?.position,
-          name: config?.yAxis?.showName && config?.yAxis?.name,
-          nameLocation: config?.yAxis?.nameLocation,
-          axisLabel: {
-            fontSize: `${config?.yAxis?.fontSize}px`,
-            rotate: config?.yAxis?.labelRotate,
-            margin: config?.yAxis?.margin,
-          },
-        },
-      ],
       series: [
-        ...data.map((element, index) => {
-          if (index > 0) {
-            const title = element[0];
-            const data = element.slice(1, element.length);
-            return {
-              name: title,
-              type: "line",
-              stack: "Total",
-              areaStyle: {},
-              emphasis: {
-                focus: "series",
-              },
-              data: data,
-            };
-          }
-        }),
+        {
+          type: "heatmap",
+          data: data,
+          label: {
+            show: true,
+          },
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowColor: "rgba(0, 0, 0, 0.5)",
+            },
+          },
+        },
       ],
     };
     return option;
@@ -228,12 +188,20 @@
   };
 
   const transformData = async (newData) => {
-    let result = Array();
-    result.push([...Object.keys(newData[0])]);
-    newData.forEach((element) => {
-      result.push([...Object.values(element)]);
+    console.log(newData);
+    xdata = [...new Set(newData.map((item) => item[col_rel.x]))];
+    ydata = [...new Set(newData.map((item) => item[col_rel.y]))];
+
+    dataValues = [
+      ...new Set(newData.map((item) => Number(item[col_rel.value]))),
+    ];
+    console.log(dataValues);
+
+    data = newData.map(function (item) {
+      return [item[col_rel.x], item[col_rel.y], item[col_rel.value] || "-"];
     });
-    return result;
+    console.log(data);
+    return data;
   };
 
   const resizeHandler = () => {
