@@ -1,28 +1,209 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./style.css" />
-    <title>Document</title>
-  </head>
-  <body>
-    <h1>Scatter Plot</h1>
-    <!-- Load d3.js -->
-    <!-- <script src="https://d3js.org/d3.v3.min.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.3.0/d3.min.js" integrity="sha512-NMhzM2RHzbCRO0s5VPaRC+2bW6nmNXimzC9p5sp2x19M+zzuSJ2T50dEQ7hpHkNjnX1mt8nQg1NNthwRZgsoIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-force/0.0.1/d3-force.min.js"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/d3-scale/0.0.2/scale.js"
-      integrity="sha512-edwuG2mZ1K2ijGpITdrM+X9chZ2hJQ9eA077jgfdKK0cV/fx+DpWfUrFkhCIG5gU3x7oNbaVRGBnsDRgr6QHFQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
-    <!-- Create a div where the graph will take place -->
-    <div id="container"></div>
+<style>
+  body,
+  html {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  .chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+<div id="chart-wrapper" class="chart-wrapper"></div>
 
-    <script src="test.js"></script>
-    <!-- <script src="script.js"></script> -->
-  </body>
-</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.0/echarts.min.js"></script>
+<script src="https://d3js.org/d3-collection.v1.min.js"></script>
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<script src="https://cafedata.io/charts/js/base-cafedata/v1.0.0.js"></script>
+
+<script>
+  let option;
+  let chartDom;
+  let chart;
+
+  let dataTopics;
+
+  // TODO : set develop to false
+  let develop = false;
+  if (develop) {
+    window.onload = () => {
+      d3.csv("./data.csv", (data) => {
+        base_first_time({
+          _col_rel: {
+            labels: "category",
+            values: "Mon",
+          },
+          _config: {
+            chart: {
+              fontSize: "16",
+              fontWeight: "bold",
+              palette:
+                "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#3ba272,#fc845,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f",
+              background: "#ffffff",
+              internalRadius: "30",
+              externalRadius: "60",
+              borderRadius: "20",
+              borderWidth: "5",
+              borderColor: "#ffffff",
+              type: " false",
+            },
+            title: {
+              text: "Chart title",
+              color: "#000",
+              backgroundColor: "transparent",
+              fontSize: "24",
+              fontWeight: "normal",
+              textAlign: "left",
+              textVerticalAlign: "bottom",
+            },
+            legend: {
+              show: true,
+              orient: "horizontal",
+              vertical: "top",
+              horizontal: "left",
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              color: "#000",
+              fontSize: 12,
+              fontWeight: "bold",
+            },
+            xAxis: {
+              name: "xAxis",
+              showName: true,
+              fontSize: "12",
+              nameLocation: "end",
+              position: "bottom",
+              labelRotate: "0",
+            },
+            yAxis: {
+              position: "left",
+              showName: true,
+              name: "yAxis",
+              nameLocation: "end",
+              labelRotate: "0",
+            },
+            subtext: {
+              text: "hi man sd",
+              color: "#ffffff",
+            },
+          },
+          _data: data,
+        });
+      });
+    };
+  }
+  const init_handler = async () => {
+    chartDom = document.getElementById("chart-wrapper");
+    chart = echarts.init(chartDom);
+    console.log("init_handler", {
+      width,
+      height,
+      col_rel,
+      config,
+      old_config,
+      data,
+    });
+    chart.setOption(get_options());
+  };
+
+  const get_options = () => {
+    option = {
+      color: config.chart.palette.split(","),
+       backgroundColor: config?.chart?.background,
+      textStyle: {
+        fontSize: `${config.chart?.fontSize}px`,
+        fontWeight: config.chart?.fontWeight,
+      },
+      title: {
+        show: config?.title?.show,
+        text: config?.title?.text,
+        textStyle: {
+          color: config?.title?.color,
+          fontSize: `${config?.title?.fontSize}px`,
+          fontWeight: config?.title?.fontWeight,
+        },
+        backgroundColor: config?.title?.backgroundColor,
+      },
+      legend: {
+        show: config?.legend.show,
+        orient: config?.legend.orient,
+        top: config?.legend.vertical == "top" ? config?.legend.top : undefined,
+        right:
+          config?.legend.horizontal == "right"
+            ? config?.legend.right
+            : undefined,
+        bottom:
+          config?.legend.vertical == "bottom"
+            ? config?.legend.bottom
+            : undefined,
+        left:
+          config?.legend.horizontal == "left" ? config?.legend.left : undefined,
+        textStyle: {
+          color: config?.legend.color,
+          fontSize: config?.legend.fontSize,
+          fontWeight: config?.legend.fontWeight,
+        },
+      },
+      xAxis: {
+        position: config?.xAxis?.position,
+        name: config?.xAxis?.showName && config?.xAxis?.name,
+        nameLocation: config?.xAxis?.nameLocation,
+        axisLabel: {
+          fontSize: `${config?.xAxis?.fontSize}px`,
+          rotate: config?.xAxis?.labelRotate,
+          margin: config?.xAxis?.margin,
+        },
+      },
+      yAxis: {
+        position: config?.yAxis?.position,
+        name: config?.yAxis?.showName && config?.yAxis?.name,
+        nameLocation: config?.yAxis?.nameLocation,
+        axisLabel: {
+          fontSize: `${config?.yAxis?.fontSize}px`,
+          rotate: config?.yAxis?.labelRotate,
+          margin: config?.yAxis?.margin,
+        },
+      },
+      series: [
+        {
+          symbolSize: 20,
+          data: data,
+          type: "scatter",
+        },
+      ],
+    };
+    return option;
+  };
+
+  const change_col = (cols) => {
+    init_chart();
+  };
+
+  const change_config_handler = (newConfig) => {
+    if (!chart) return;
+    chart.setOption(get_options());
+  };
+
+  const transformData = async (newData) => {
+    let result = Array();
+    result.push([...Object.keys(newData[0])]);
+    newData.forEach((element) => {
+      result.push([...Object.values(element)]);
+    });
+    return result;
+  };
+
+  const resizeHandler = () => {
+    chart?.resize({
+      width: width,
+      height: height,
+    });
+  };
+</script>

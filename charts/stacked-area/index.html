@@ -116,7 +116,7 @@
   const get_options = () => {
     option = {
       color: config.chart.palette.split(","),
-      backgroundColor: "#2A0C4E",
+      backgroundColor: config?.chart?.background,
       textStyle: {
         fontSize: `${config.chart?.fontSize}px`,
         fontWeight: config.chart?.fontWeight,
@@ -130,10 +130,7 @@
           fontWeight: config?.title?.fontWeight,
         },
         backgroundColor: config?.title?.backgroundColor,
-        // textAlign: config?.title?.textAlign,
-        // textVerticalAlign: config?.title?.textVerticalAlign,
       },
-      backgroundColor: config?.chart?.background,
       tooltip: {
         trigger: "axis",
         axisPointer: {
