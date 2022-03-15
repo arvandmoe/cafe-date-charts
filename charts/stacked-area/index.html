@@ -29,7 +29,7 @@
   let dataTopics;
 
   // TODO : set develop to false
-  let develop = true;
+  let develop = false;
   if (develop) {
     window.onload = () => {
       d3.csv("./data.csv", (data) => {
@@ -53,13 +53,19 @@
               type: " false",
             },
             title: {
+              show: true,
+              subshow: true,
               text: "Chart title",
-              color: "#000",
-              backgroundColor: "transparent",
-              fontSize: "24",
-              fontWeight: "normal",
               textAlign: "left",
               textVerticalAlign: "bottom",
+              fontSize: "18",
+              color: "#000",
+              backgroundColor: "transparent",
+              fontWeight: "bold",
+              subtext: "Subtitle",
+              subcolor: "#000",
+              subfontSize: "12",
+              subfontWeight: "normal",
             },
             legend: {
               show: true,
@@ -99,6 +105,7 @@
       });
     };
   }
+
   const init_handler = async () => {
     chartDom = document.getElementById("chart-wrapper");
     chart = echarts.init(chartDom);
@@ -124,12 +131,18 @@
       title: {
         show: config?.title?.show,
         text: config?.title?.text,
+        backgroundColor: config?.title?.backgroundColor,
         textStyle: {
           color: config?.title?.color,
           fontSize: `${config?.title?.fontSize}px`,
           fontWeight: config?.title?.fontWeight,
         },
-        backgroundColor: config?.title?.backgroundColor,
+        subtext: config?.title?.subshow ? config?.title?.subtext : undefined,
+        subtextStyle: {
+          color: config?.title?.subcolor,
+          fontSize: `${config?.title?.subfontSize}px`,
+          fontWeight: config?.title?.subfontWeight,
+        },
       },
       tooltip: {
         trigger: "axis",
@@ -153,7 +166,11 @@
             ? config?.legend.bottom
             : undefined,
         left:
-          config?.legend.horizontal == "left" ? config?.legend.left : undefined,
+          config?.legend.horizontal == "left"
+            ? config?.legend.left
+            : config?.legend.horizontal == "center"
+            ? "center"
+            : undefined,
         textStyle: {
           color: config?.legend.color,
           fontSize: config?.legend.fontSize,
