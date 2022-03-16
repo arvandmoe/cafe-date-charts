@@ -1,43 +1,36 @@
 ---
-sidebar_position: 1
+sidebar_position: 4
 ---
 
-# Title
+# YAxis
+
+![Cafe Data Panel](/img/configs/xaxis/1.png)
+![Cafe Data Panel](/img/configs/xaxis/2.png)
 
 :::danger Take care
 
 Change these properties:
 
-- title.text | default | Stacked Area Chart
+- yaxis.data | option | data[0].filter((item, index) => index > 0)
 
 :::
 
-![Cafe Data Panel](/img/configs/title/1.png)
-![Cafe Data Panel](/img/configs/title/2.png)
-![Cafe Data Panel](/img/configs/title/3.png)
-
-
-
 ```js title="index.html"
 option = {
-  title: {
-        show: config?.title?.show,
-        text: config?.title?.text,
-        backgroundColor: config?.title?.backgroundColor,
-        textStyle: {
-          color: config?.title?.color,
-          fontSize: `${config?.title?.fontSize}px`,
-          fontWeight: config?.title?.fontWeight,
-        },
-        subtext: config?.title?.subshow ? config?.title?.subtext : undefined,
-        subtextStyle: {
-          color: config?.title?.subcolor,
-          fontSize: `${config?.title?.subfontSize}px`,
-          fontWeight: config?.title?.subfontWeight,
-        },
+  yAxis: [
+    {
+      type: "value",
+      position: config?.yAxis?.position,
+      name: config?.yAxis?.showName && config?.yAxis?.name,
+      nameLocation: config?.yAxis?.nameLocation,
+      axisLabel: {
+        fontSize: `${config?.yAxis?.fontSize}px`,
+        rotate: config?.yAxis?.labelRotate,
+        margin: config?.yAxis?.margin,
       },
-}
-
+    },
+  ],
+};
 ```
 
 ```json title="settings.json"
