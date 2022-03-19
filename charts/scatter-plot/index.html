@@ -115,7 +115,7 @@
 
   const get_options = () => {
     option = {
-      color: config.chart.palette.split(","),
+      color: config.chart.color,
        backgroundColor: config?.chart?.background,
       textStyle: {
         fontSize: `${config.chart?.fontSize}px`,
@@ -124,14 +124,20 @@
       title: {
         show: config?.title?.show,
         text: config?.title?.text,
+        backgroundColor: config?.title?.backgroundColor,
         textStyle: {
           color: config?.title?.color,
           fontSize: `${config?.title?.fontSize}px`,
           fontWeight: config?.title?.fontWeight,
         },
-        backgroundColor: config?.title?.backgroundColor,
+        subtext: config?.title?.subshow ? config?.title?.subtext : undefined,
+        subtextStyle: {
+          color: config?.title?.subcolor,
+          fontSize: `${config?.title?.subfontSize}px`,
+          fontWeight: config?.title?.subfontWeight,
+        },
       },
-      legend: {
+       legend: {
         show: config?.legend.show,
         orient: config?.legend.orient,
         top: config?.legend.vertical == "top" ? config?.legend.top : undefined,
@@ -144,7 +150,11 @@
             ? config?.legend.bottom
             : undefined,
         left:
-          config?.legend.horizontal == "left" ? config?.legend.left : undefined,
+          config?.legend.horizontal == "left"
+            ? config?.legend.left
+            : config?.legend.horizontal == "center"
+            ? "center"
+            : undefined,
         textStyle: {
           color: config?.legend.color,
           fontSize: config?.legend.fontSize,

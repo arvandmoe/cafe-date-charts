@@ -217,20 +217,6 @@
 						]
 					},
 					{
-						"label": "label",
-						"field": "xAxis.name",
-						"type": "input-text",
-						"default": "xAxis",
-						"width": "50%"
-					},
-					{
-						"label": "label",
-						"field": "xAxis.showName",
-						"type": "switch",
-						"default": false,
-						"width": "50%"
-					},
-					{
 						"label": "font size",
 						"field": "xAxis.fontSize",
 						"type": "input-number",
@@ -248,11 +234,28 @@
 						"label": "margin",
 						"field": "xAxis.margin",
 						"type": "input-number",
-						"default": "0",
+						"default": "8",
 						"width": "25%"
 					},
 					{
-						"label": "label location",
+						"label": "show title",
+						"field": "xAxis.showName",
+						"type": "switch",
+						"default": false,
+						"width": "100%"
+					},
+					{
+						"label": "title",
+						"field": "xAxis.name",
+						"type": "input-text",
+						"default": "xAxis",
+						"width": "100%",
+						"show_if": {
+							"xAxis.showName": true
+						}
+					},
+					{
+						"label": "title location",
 						"field": "xAxis.nameLocation",
 						"type": "radio-button",
 						"default": "end",
@@ -270,14 +273,10 @@
 								"display": "end",
 								"value": "end"
 							}
-						]
-					},
-					{
-						"label": "label gap",
-						"field": "xAxis.nameGap",
-						"type": "input-number",
-						"default": "28",
-						"width": "100%"
+						],
+						"show_if": {
+							"xAxis.showName": true
+						}
 					}
 				]
 			}
@@ -323,25 +322,25 @@
 						"label": "margin",
 						"field": "yAxis.margin",
 						"type": "input-number",
-						"default": "0",
+						"default": "8",
 						"width": "25%"
 					},
 					{
-						"label": "axis title",
+						"label": "label",
 						"field": "yAxis.name",
 						"type": "input-text",
-						"default": "yAxis",
+						"default": "xAxis",
 						"width": "50%"
 					},
 					{
-						"label": "title",
+						"label": "show label",
 						"field": "yAxis.showName",
 						"type": "switch",
 						"default": false,
 						"width": "50%"
 					},
 					{
-						"label": "title location",
+						"label": "label location",
 						"field": "yAxis.nameLocation",
 						"type": "radio-button",
 						"default": "end",
@@ -360,13 +359,6 @@
 								"value": "end"
 							}
 						]
-					},
-					{
-						"label": "title margin",
-						"field": "yAxis.nameGap",
-						"type": "input-number",
-						"default": "28",
-						"width": "100%"
 					}
 				]
 			}

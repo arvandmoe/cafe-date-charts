@@ -9,7 +9,7 @@
     {
         "field": "values",
         "label": "values",
-        "default": "B-ZZ",
+        "default": "B",
         "required": true,
         "hint": ""
     }

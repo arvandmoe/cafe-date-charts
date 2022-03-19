@@ -389,7 +389,7 @@
 		]
 	},
 	{
-		"name": "xAxis",
+		"name": "X axis",
 		"rows": [
 			{
 				"components": [
@@ -477,7 +477,7 @@
 		]
 	},
 	{
-		"name": "yAxis",
+		"name": "Y axis",
 		"rows": [
 			{
 				"components": [

@@ -19,28 +19,14 @@
 						"width": "50%"
 					},
 					{
-						"label": "palette",
-						"field": "chart.palette",
-						"type": "select-color-palette",
-						"default": "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#F2B701,#2EC4B6,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f",
-						"width": "100%",
-						"options": [
-							{
-								"display": "first",
-								"value": "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#F2B701,#2EC4B6,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f"
-							},
-							{
-								"display": "second",
-								"value": "#11A579,#CC503E,#3969AC,#F2B701,#7F3C8D,#80BA5A,#E68310,#CF1C90,#008695,#F97B72,#4B4B8F,#A5AA99"
-							},
-							{
-								"display": "third",
-								"value": "#2C1320,#006D77,#DB5461,#E2EF70,#94C9A9,#ADA7C9,#2EC4B6,#CEDFD9,#008695,#ACAD94,#4B4B8F,#85BDA6"
-							}
-						]
+						"label": "color",
+						"field": "chart.color",
+						"type": "color-picker",
+						"default": "#000",
+						"width": "100%"
 					},
 					{
-						"label": "fontWeight",
+						"label": "font weight",
 						"field": "chart.fontWeight",
 						"type": "radio-button",
 						"default": "normal",
@@ -68,9 +54,10 @@
 		"name": "title",
 		"rows": [
 			{
+				"name": "title",
 				"components": [
 					{
-						"label": "show",
+						"label": "show title",
 						"field": "title.show",
 						"type": "switch",
 						"default": false,
@@ -80,7 +67,7 @@
 						"label": "title",
 						"field": "title.text",
 						"type": "input-text",
-						"default": "Scatter Plot Chart",
+						"default": "Stacked Area Chart",
 						"width": "100%",
 						"show_if": {
 							"title.show": true
@@ -97,17 +84,17 @@
 						}
 					},
 					{
-						"label": "backgroundColor",
-						"field": "title.backgroundColor",
+						"label": "color",
+						"field": "title.color",
 						"type": "color-picker",
-						"default": "transparent",
+						"default": "#000",
 						"width": "50%",
 						"show_if": {
 							"title.show": true
 						}
 					},
 					{
-						"label": "fontWeight",
+						"label": "font weight",
 						"field": "title.fontWeight",
 						"type": "radio-button",
 						"default": "normal",
@@ -129,6 +116,85 @@
 						"show_if": {
 							"title.show": true
 						}
+					},
+					{
+						"label": "background",
+						"field": "title.backgroundColor",
+						"type": "color-picker",
+						"default": "transparent",
+						"width": "100%",
+						"show_if": {
+							"title.show": true
+						}
+					}
+				]
+			},
+			{
+				"name": "subtitle",
+				"components": [
+					{
+						"label": "show subtitle",
+						"field": "title.subshow",
+						"type": "switch",
+						"default": false,
+						"width": "100%",
+						"show_if": {
+							"title.show": true
+						}
+					},
+					{
+						"label": "subtitle",
+						"field": "title.subtext",
+						"type": "input-text",
+						"default": "Subtitle",
+						"width": "100%",
+						"show_if": {
+							"title.subshow": true
+						}
+					},
+					{
+						"label": "font size",
+						"field": "title.subfontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%",
+						"show_if": {
+							"title.subshow": true
+						}
+					},
+					{
+						"label": "color",
+						"field": "title.subcolor",
+						"type": "color-picker",
+						"default": "#333333",
+						"width": "50%",
+						"show_if": {
+							"title.subshow": true
+						}
+					},
+					{
+						"label": "font weight",
+						"field": "title.subfontWeight",
+						"type": "radio-button",
+						"default": "normal",
+						"width": "100%",
+						"options": [
+							{
+								"display": "lighter",
+								"value": "lighter"
+							},
+							{
+								"display": "normal",
+								"value": "normal"
+							},
+							{
+								"display": "bold",
+								"value": "bold"
+							}
+						],
+						"show_if": {
+							"title.subshow": true
+						}
 					}
 				]
 			}
@@ -138,7 +204,7 @@
 		"name": "legend",
 		"rows": [
 			{
-				"name": "position",
+				"name": "legend",
 				"components": [
 					{
 						"label": "show legend",
@@ -162,7 +228,10 @@
 								"display": "vertical",
 								"value": "vertical"
 							}
-						]
+						],
+						"show_if": {
+							"legend.show": true
+						}
 					},
 					{
 						"label": "vertical alignment",
@@ -179,7 +248,10 @@
 								"display": "bottom",
 								"value": "bottom"
 							}
-						]
+						],
+						"show_if": {
+							"legend.show": true
+						}
 					},
 					{
 						"label": "horizontal alignment",
@@ -193,10 +265,17 @@
 								"value": "left"
 							},
 							{
+								"display": "center",
+								"value": "center"
+							},
+							{
 								"display": "right",
 								"value": "right"
 							}
-						]
+						],
+						"show_if": {
+							"legend.show": true
+						}
 					},
 					{
 						"label": "top",
@@ -205,7 +284,8 @@
 						"default": "0",
 						"width": "50%",
 						"show_if": {
-							"legend.vertical": "top"
+							"legend.vertical": "top",
+							"legend.show": true
 						}
 					},
 					{
@@ -215,7 +295,8 @@
 						"default": "0",
 						"width": "50%",
 						"show_if": {
-							"legend.vertical": "bottom"
+							"legend.vertical": "bottom",
+							"legend.show": true
 						}
 					},
 					{
@@ -225,7 +306,8 @@
 						"default": "0",
 						"width": "50%",
 						"show_if": {
-							"legend.horizontal": "right"
+							"legend.horizontal": "right",
+							"legend.show": true
 						}
 					},
 					{
@@ -235,7 +317,8 @@
 						"default": "0",
 						"width": "50%",
 						"show_if": {
-							"legend.horizontal": "left"
+							"legend.horizontal": "left",
+							"legend.show": true
 						}
 					}
 				]
@@ -248,17 +331,23 @@
 						"field": "legend.fontSize",
 						"type": "input-number",
 						"default": "10",
-						"width": "50%"
+						"width": "50%",
+						"show_if": {
+							"legend.show": true
+						}
 					},
 					{
 						"label": "color",
 						"field": "legend.color",
 						"type": "color-picker",
 						"default": "#000",
-						"width": "50%"
+						"width": "50%",
+						"show_if": {
+							"legend.show": true
+						}
 					},
 					{
-						"label": "fontWeight",
+						"label": "font weight",
 						"field": "legend.fontWeight",
 						"type": "radio-button",
 						"default": "normal",
@@ -276,14 +365,17 @@
 								"display": "bold",
 								"value": "bold"
 							}
-						]
+						],
+						"show_if": {
+							"legend.show": true
+						}
 					}
 				]
 			}
 		]
 	},
 	{
-		"name": "xAxis",
+		"name": "X axis",
 		"rows": [
 			{
 				"components": [
@@ -326,21 +418,24 @@
 						"width": "25%"
 					},
 					{
-						"label": "label",
-						"field": "xAxis.name",
-						"type": "input-text",
-						"default": "xAxis",
-						"width": "50%"
-					},
-					{
-						"label": "show label",
+						"label": "show title",
 						"field": "xAxis.showName",
 						"type": "switch",
 						"default": false,
-						"width": "50%"
+						"width": "100%"
 					},
 					{
-						"label": "label location",
+						"label": "title",
+						"field": "xAxis.name",
+						"type": "input-text",
+						"default": "xAxis",
+						"width": "100%",
+						"show_if": {
+							"xAxis.showName": true
+						}
+					},
+					{
+						"label": "title location",
 						"field": "xAxis.nameLocation",
 						"type": "radio-button",
 						"default": "end",
@@ -358,14 +453,17 @@
 								"display": "end",
 								"value": "end"
 							}
-						]
+						],
+						"show_if": {
+							"xAxis.showName": true
+						}
 					}
 				]
 			}
 		]
 	},
 	{
-		"name": "yAxis",
+		"name": "Y axis",
 		"rows": [
 			{
 				"components": [
@@ -373,18 +471,25 @@
 						"label": "position",
 						"field": "yAxis.position",
 						"type": "radio-button",
-						"default": "left",
+						"default": "bottom",
 						"width": "100%",
 						"options": [
 							{
-								"display": "left",
-								"value": "left"
+								"display": "top",
+								"value": "top"
 							},
 							{
-								"display": "right",
-								"value": "right"
+								"display": "bottom",
+								"value": "bottom"
 							}
 						]
+					},
+					{
+						"label": "font size",
+						"field": "yAxis.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%"
 					},
 					{
 						"label": "rotation",
@@ -401,21 +506,24 @@
 						"width": "25%"
 					},
 					{
-						"label": "label",
-						"field": "yAxis.name",
-						"type": "input-text",
-						"default": "xAxis",
-						"width": "50%"
-					},
-					{
-						"label": "show label",
+						"label": "show title",
 						"field": "yAxis.showName",
 						"type": "switch",
 						"default": false,
-						"width": "50%"
+						"width": "100%"
 					},
 					{
-						"label": "label location",
+						"label": "title",
+						"field": "yAxis.name",
+						"type": "input-text",
+						"default": "yAxis",
+						"width": "100%",
+						"show_if": {
+							"yAxis.showName": true
+						}
+					},
+					{
+						"label": "title location",
 						"field": "yAxis.nameLocation",
 						"type": "radio-button",
 						"default": "end",
@@ -433,7 +541,10 @@
 								"display": "end",
 								"value": "end"
 							}
-						]
+						],
+						"show_if": {
+							"yAxis.showName": true
+						}
 					}
 				]
 			}
