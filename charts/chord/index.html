@@ -13,12 +13,10 @@
     height: 100%;
   }
 </style>
+
 <div id="chart-wrapper" class="chart-wrapper"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.0/echarts.min.js"></script>
-<script src="https://d3js.org/d3-collection.v1.min.js"></script>
-<script src="https://d3js.org/d3.v4.js"></script>
-
+<script src="https://d3js.org/d3.v7.js"></script>
 <script src="https://cafedata.io/charts/js/base-cafedata/v1.0.0.js"></script>
 
 <script>
@@ -26,98 +24,86 @@
   let chartDom;
   let chart;
 
-  let dataTopics;
-
   // TODO : set develop to false
   let develop = true;
   if (develop) {
     window.onload = () => {
-      d3.csv("./data.csv", (data) => {
-        base_first_time({
-          _col_rel: {
-            labels: "category",
-            values: "Mon",
+      base_first_time({
+        _col_rel: {
+          labels: "category",
+          values: "Mon",
+        },
+        _config: {
+          chart: {
+            fontSize: "16",
+            fontWeight: "bold",
+            palette:
+              "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#3ba272,#fc845,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f",
+            background: "#ffffff",
+            internalRadius: "30",
+            externalRadius: "60",
+            borderRadius: "20",
+            borderWidth: "5",
+            borderColor: "#ffffff",
+            type: " false",
           },
-          _config: {
-            chart: {
-              fontSize: "16",
-              fontWeight: "bold",
-              palette:
-                "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#3ba272,#fc845,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f",
-              background: "#ffffff",
-              internalRadius: "30",
-              externalRadius: "60",
-              borderRadius: "20",
-              borderWidth: "5",
-              borderColor: "#ffffff",
-              type: " false",
-            },
-            title: {
-              show: true,
-              subshow: true,
-              text: "Chart title",
-              textAlign: "left",
-              textVerticalAlign: "bottom",
-              fontSize: "18",
-              color: "#000",
-              backgroundColor: "transparent",
-              fontWeight: "bold",
-              subtext: "Subtitle",
-              subcolor: "#000",
-              subfontSize: "12",
-              subfontWeight: "normal",
-            },
-            legend: {
-              show: true,
-              orient: "horizontal",
-              vertical: "top",
-              horizontal: "left",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: "center",
-              color: "#000",
-              fontSize: 12,
-              fontWeight: "bold",
-            },
-            xAxis: {
-              name: "xAxis",
-              showName: true,
-              fontSize: "12",
-              nameLocation: "end",
-              position: "bottom",
-              labelRotate: "0",
-            },
-            yAxis: {
-              position: "left",
-              showName: true,
-              name: "yAxis",
-              nameLocation: "end",
-              labelRotate: "0",
-            },
-            subtext: {
-              text: "hi man sd",
-              color: "#ffffff",
-            },
-          },
-          _data: data,
-        });
+        },
+        // _data: data,
+      });
+      d3.csv("./data.csv", (newData) => {
+        console.log(newData);
       });
     };
   }
 
   const init_handler = async () => {
-    chartDom = document.getElementById("chart-wrapper");
-    chart = echarts.init(chartDom);
-    console.log("init_handler", {
-      width,
-      height,
-      col_rel,
-      config,
-      old_config,
-      data,
-    });
-    chart.setOption(get_options());
+    console.log("init_handler called");
+    // create the svg area
+    chart = d3
+      .select("#chart-wrapper")
+      .append("svg")
+      .attr("width", 440)
+      .attr("height", 440)
+      .append("g")
+      .attr("transform", "translate(220,220)");
+    // create a matrix
+    const matrix = [
+      [0, 5871, 8916, 2868],
+      [1951, 0, 2060, 6171],
+      [8010, 16145, 0, 8045],
+      [1013, 990, 940, 0],
+    ];
+
+    // 4 groups, so create a vector of 4 colors
+    const colors = ["#440154ff", "#31668dff", "#37b578ff", "#fde725ff"];
+
+    // give this matrix to d3.chord(): it will calculates all the info we need to draw arc and ribbon
+    const res = d3.chord().padAngle(0.05).sortSubgroups(d3.descending)(matrix);
+
+    // add the groups on the outer part of the circle
+    chart
+      .datum(res)
+      .append("g")
+      .selectAll("g")
+      .data(function (d) {
+        return d.groups;
+      })
+      .join("g")
+      .append("path")
+      .style("fill", (d, i) => colors[i])
+      .style("stroke", "black")
+      .attr("d", d3.arc().innerRadius(200).outerRadius(210));
+
+    // Add the links between groups
+    chart
+      .datum(res)
+      .append("g")
+      .selectAll("path")
+      .data((d) => d)
+      .join("path")
+      .attr("d", d3.ribbon().radius(200))
+      .style("fill", (d) => colors[d.source.index]) // colors depend on the source group. Change to target otherwise.
+      .style("stroke", "black");
   };
 
   const get_options = () => {
@@ -233,27 +219,27 @@
   };
 
   const change_col = (cols) => {
-    init_chart();
+    // init_chart();
   };
 
   const change_config_handler = (newConfig) => {
-    if (!chart) return;
-    chart.setOption(get_options());
+    // if (!chart) return;
+    // chart.setOption(get_options());
   };
 
   const transformData = async (newData) => {
     let result = Array();
-    result.push([...Object.keys(newData[0])]);
-    newData.forEach((element) => {
-      result.push([...Object.values(element)]);
-    });
+    // result.push([...Object.keys(newData[0])]);
+    // newData.forEach((element) => {
+    //   result.push([...Object.values(element)]);
+    // });
     return result;
   };
 
   const resizeHandler = () => {
-    chart?.resize({
-      width: width,
-      height: height,
-    });
+    // chart?.resize({
+    //   width: width,
+    //   height: height,
+    // });
   };
 </script>
