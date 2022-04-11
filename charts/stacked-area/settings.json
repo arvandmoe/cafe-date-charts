@@ -339,26 +339,23 @@
 			},
 			{
 				"name": "text style",
+				"show_if": {
+					"legend.show": true
+				},
 				"components": [
 					{
 						"label": "font size",
 						"field": "legend.fontSize",
 						"type": "input-number",
 						"default": "10",
-						"width": "50%",
-						"show_if": {
-							"legend.show": true
-						}
+						"width": "50%"
 					},
 					{
 						"label": "color",
 						"field": "legend.color",
 						"type": "color-picker",
 						"default": "#000",
-						"width": "50%",
-						"show_if": {
-							"legend.show": true
-						}
+						"width": "50%"
 					},
 					{
 						"label": "font weight",
@@ -379,10 +376,7 @@
 								"display": "bold",
 								"value": "bold"
 							}
-						],
-						"show_if": {
-							"legend.show": true
-						}
+						]
 					}
 				]
 			}
