@@ -1,15 +1,22 @@
 [
     {
-        "field": "labels",
-        "label": "labels",
+        "field": "source",
+        "label": "source",
         "default": "A",
         "required": true,
         "hint": ""
     },
     {
-        "field": "values",
-        "label": "values",
-        "default": "B-ZZ",
+        "field": "target",
+        "label": "target",
+        "default": "B",
+        "required": true,
+        "hint": ""
+    },
+    {
+        "field": "value",
+        "label": "value",
+        "default": "C",
         "required": true,
         "hint": ""
     }

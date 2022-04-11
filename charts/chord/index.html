@@ -20,92 +20,92 @@
 
 <script src="https://cafedata.io/charts/js/base-cafedata/v1.0.0.js"></script>
 
+<script src="./main.js"></script>
+
 <script>
   let option;
   let chartDom;
   let chart;
 
-  // chart specific variables
-  let radius;
-
   // TODO : set develop to false
   let develop = true;
   if (develop) {
-    window.onload = () => {
+    window.onload = async () => {
+      const data = await d3.csv("./data.csv");
       base_first_time({
         _col_rel: {
-          labels: "category",
-          values: "Mon",
+          source: "source",
+          target: "target",
+          value: "Count",
         },
         _config: {
           chart: {
-            ringWidth: "20",
-            innerRadius: 200,
-            outterRadius: 220,
+            fontSize: 12,
+            fontWeight: "bold",
+            background: "transparent",
+            palette:
+              "#11A579,#CC503E,#3969AC,#F2B701,#7F3C8D,#80BA5A,#E68310,#CF1C90,#008695,#F97B72,#4B4B8F,#A5AA99",
+          },
+          arc: {
+            thickness: "20",
+            spaceBelow: "5",
+            paddingAngle: "0.02",
           },
         },
-        // _data: data,
-      });
-      d3.csv("./data.csv", (newData) => {
-        console.log(newData);
+        _data: data,
       });
     };
   }
 
-  const init_handler = async () => {
-    console.log("init_handler called");
+  // chart specific variables
+  let chord;
+  let arc;
+  let group;
+  let svg;
 
+  const init_handler = async () => {
     outerRadius = Math.min(width, height) * 0.5;
-    innerRadius = outerRadius - 124;
+    innerRadius = outerRadius - 50;
 
     chord = d3
       .chord()
-      .padAngle(0.02)
+      .padAngle(Number(config?.arc?.paddingAngle))
       .sortSubgroups(d3.descending)
       .sortChords(d3.descending);
 
     arc = d3
       .arc()
-      .innerRadius(innerRadius + 5)
-      .outerRadius(innerRadius + 20);
+      .innerRadius(innerRadius + Number(config?.arc?.spaceBelow))
+      .outerRadius(
+        innerRadius +
+          Number(config?.arc?.spaceBelow) +
+          Number(config?.arc?.thickness)
+      );
 
     ribbon = d3.ribbon().radius(innerRadius);
 
-    color = d3.scaleOrdinal(d3.schemeCategory10);
+    color = d3.scaleOrdinal(config?.chart?.palette.split(","));
 
-    const svg = d3
+    svg = d3
       .select("#chart-wrapper")
+      .style("background-color", config.chart.background ?? "transparent")
       .append("svg")
+      .attr("font-size", config?.chart?.fontSize)
+      .attr("font-weight", config?.chart?.fontWeight)
       .attr("viewBox", [-width / 2, -height / 2, width, height])
-      .attr("font-size", 12)
       .attr("font-family", "sans-serif")
-      .style("width", width > height ? "auto" : width)
-      .style("height", width <= height ? "auto" : height);
+      .style("width", "100%")
+      .style("height", "100%");
 
     const chords = chord(data.matrix);
 
-    const group = svg.append("g").selectAll("g").data(chords.groups).join("g");
-
-    function onMouseOver(selected) {
-      group.filter((d) => d.index !== selected.index).style("opacity", 0.3);
-
-      svg
-        .selectAll(".chord")
-        .filter((d) => d.source.index !== selected.index)
-        .style("opacity", 0.3);
-    }
-
-    function onMouseOut() {
-      group.style("opacity", 1);
-      svg.selectAll(".chord").style("opacity", 1);
-    }
+    group = svg.append("g").selectAll("g").data(chords.groups).join("g");
 
     group
       .append("path")
       .attr("fill", (d) => color(d.index))
       // .attr("stroke", (d) => d3.rgb(color(d.index)).darker())
       .attr("d", arc)
-
       .on("mouseover", onMouseOver)
       .on("mouseout", onMouseOut);
 
@@ -119,104 +119,120 @@
         "transform",
         (d) => `
         rotate(${(d.angle * 180) / Math.PI - 90})
-        translate(${innerRadius + 26})
+        translate(${
+          innerRadius +
+          Number(config.arc?.spaceBelow) +
+          Number(config?.arc?.thickness) +
+          12
+        })
         ${d.angle > Math.PI ? "rotate(180)" : ""}
       `
       )
       .attr("text-anchor", (d) => (d.angle > Math.PI ? "end" : null))
-      .text((d) => data.nameByIndex.get(d.index));
+      .text((d) => data.names[d.index]);
 
     svg
       .append("g")
+      .attr("class", "ribbon")
       .attr("fill-opacity", 0.67)
       .selectAll("path")
       .data(chords)
       .join("path")
       .attr("class", "chord")
       // .attr("stroke", (d) => d3.rgb(color(d.source.index)).darker())
-      .attr("fill", (d) => color(d.source.index))
       .attr("d", ribbon)
+      .attr("fill", (d) => color(d.source.index))
       .on("mouseover", (d) => onMouseOver(d.source))
       .on("mouseout", (d) => onMouseOut(d.source));
-
-    return svg.node();
   };
 
   const change_col = (cols) => {
     // init_chart();
   };
 
+  setTimeout(()=> {
+    config.arc.paddingAngle = 0.03
+    change_config_handler(config)
+  },2000)
   const change_config_handler = (newConfig) => {
-    // if (!chart) return;
-    // chart.setOption(get_options());
+    svg
+      .style("background-color", config.chart.background ?? "transparent")
+      .style("font-size", config?.chart?.fontSize)
+      .style("font-weight", config?.chart?.fontWeight);
+    arc
+      .innerRadius(innerRadius + Number(config.arc?.spaceBelow))
+      .outerRadius(
+        innerRadius +
+          Number(config.arc?.spaceBelow) +
+          Number(config?.arc?.thickness)
+      );
+
+    chord.padAngle(Number(config?.arc?.paddingAngle));
+
+    color = d3.scaleOrdinal(config?.chart?.palette.split(","));
+
+    group
+      .select("path")
+      .attr("d", arc)
+      .attr("fill", (d) => color(d.index));
+
+    svg
+      .selectAll("path.chord")
+      // .attr("stroke", (d) => d3.rgb(color(d.source.index)).darker())
+      .style("fill", (d) => color(d.source.index));
+
+    group
+      .selectAll("text")
+      .attr(
+        "transform",
+        (d) => `
+        rotate(${(d.angle * 180) / Math.PI - 90})
+        translate(${
+          innerRadius +
+          Number(config.arc?.spaceBelow) +
+          Number(config?.arc?.thickness) +
+          12
+        })
+        ${d.angle > Math.PI ? "rotate(180)" : ""}
+      `
+      )
+      .transition();
   };
 
-  setTimeout(() => {
-    console.log("setTimeout : change_config_handler called...");
-  }, 2000);
-
   const transformData = async (newData) => {
-    const imports = await d3.json(
-      "https://gist.githubusercontent.com/mbostock/1044242/raw/3ebc0fde3887e288b4a9979dad446eb434c54d08/flare.json"
-    );
+    names = Array.from(new Set(newData.flatMap((d) => [d.source, d.target])));
 
-    console.log(imports);
-
-    const indexByName = new Map();
-    const nameByIndex = new Map();
-    const matrix = [];
-    let n = 0;
-
-    // Returns the Flare package name for the given class name.
-    function name(name) {
-      return name.substring(0, name.lastIndexOf(".")).substring(6);
-    }
-
-    // Compute a unique index for each package name.
-    imports.forEach((d) => {
-      if (!indexByName.has((d = name(d.name)))) {
-        nameByIndex.set(n, d);
-        indexByName.set(d, n++);
-      }
-    });
-
-    // Construct a square matrix counting package imports.
-    imports.forEach((d) => {
-      const source = indexByName.get(name(d.name));
-      let row = matrix[source];
-      if (!row) row = matrix[source] = Array.from({ length: n }).fill(0);
-      d.imports.forEach((d) => row[indexByName.get(name(d))]++);
-    });
-
-    console.log(nameByIndex);
+    const index = new Map(names.map((name, i) => [name.trim(), i]));
+    const matrix = Array.from(index, () => new Array(names.length).fill(0));
+    for (const { source, target, count } of newData)
+      matrix[index.get(source)][index.get(target)] += Number(count);
 
     return {
       matrix,
-      indexByName,
-      nameByIndex,
+      names,
     };
   };
 
   const resizeHandler = () => {
-    // chart?.resize({
-    //   width: width,
-    //   height: height,
-    // });
+    // TODO: handle resize
+    //   .attr("viewBox", [-width / 2, -height / 2, width, height])
+    //   .style("width", width > height ? height : width)
+    //   .style("height", width <= height ? width : height);
   };
 
   ////////////////// Events //////////////////
 
-  // function onMouseOver(selected) {
-  //   group.filter((d) => d.index !== selected.index).style("opacity", 0.3);
+  function onMouseOver(selected) {
+    group.filter((d) => d.index !== selected.index).style("opacity", 0.3);
 
-  //   svg
-  //     .selectAll(".chord")
-  //     .filter((d) => d.source.index !== selected.index)
-  //     .style("opacity", 0.3);
-  // }
+    svg
+      .selectAll(".chord")
+      .filter((d) => d.source.index !== selected.index)
+      .style("opacity", 0.3);
+  }
 
-  // function onMouseOut() {
-  //   group.style("opacity", 1);
-  //   svg.selectAll(".chord").style("opacity", 1);
-  // }
+  function onMouseOut() {
+    group.style("opacity", 1);
+    svg.selectAll(".chord").style("opacity", 1);
+  }
 </script>
