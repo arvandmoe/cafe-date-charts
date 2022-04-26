@@ -12,18 +12,11 @@
 						"width": "50%"
 					},
 					{
-						"label": "grid",
-						"field": "chart.grid",
-						"type": "switch",
-						"default": false,
-						"width": "50%"
-					},
-					{
 						"label": "background",
 						"field": "chart.background",
 						"type": "color-picker",
 						"default": "#ffffff",
-						"width": "100%"
+						"width": "50%"
 					},
 					{
 						"label": "color",

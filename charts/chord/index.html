@@ -20,7 +20,10 @@
 
 <script src="https://cafedata.io/charts/js/base-cafedata/v1.0.0.js"></script>
 
-<script src="./main.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+/>
 
 <script>
   let option;
@@ -43,11 +46,21 @@
             fontSize: 12,
             fontWeight: "bold",
             background: "transparent",
+            colors: "solid",
             palette:
               "#11A579,#CC503E,#3969AC,#F2B701,#7F3C8D,#80BA5A,#E68310,#CF1C90,#008695,#F97B72,#4B4B8F,#A5AA99",
           },
+          ribbon: {
+            opacity: "0.67",
+          },
+          title: {
+            fontWeight: "normal",
+            text: "Chord Diagram",
+
+            fontSize: "12",
+          },
           arc: {
-            thickness: "20",
+            thickness: "30",
             spaceBelow: "5",
             paddingAngle: "0.02",
           },
@@ -62,6 +75,9 @@
   let arc;
   let group;
   let svg;
+  let color;
+  let tooltip;
+  let grads;
 
   const init_handler = async () => {
     outerRadius = Math.min(width, height) * 0.5;
@@ -72,6 +88,8 @@
       .padAngle(Number(config?.arc?.paddingAngle))
       .sortSubgroups(d3.descending)
       .sortChords(d3.descending);
+
+    const chords = chord(data.matrix);
 
     arc = d3
       .arc()
@@ -94,27 +112,40 @@
       .attr("font-weight", config?.chart?.fontWeight)
       .attr("viewBox", [-width / 2, -height / 2, width, height])
       .attr("font-family", "sans-serif")
-      .style("width", "100%")
-      .style("height", "100%");
-
-    const chords = chord(data.matrix);
+      .style("position", "absolute")
+      .style("width", width)
+      .style("height", height);
 
     group = svg.append("g").selectAll("g").data(chords.groups).join("g");
 
     group
       .append("path")
+      .attr("class", "arc")
       .attr("fill", (d) => color(d.index))
       // .attr("stroke", (d) => d3.rgb(color(d.index)).darker())
       .attr("d", arc)
-      .on("mouseover", onMouseOver)
-      .on("mouseout", onMouseOut);
+      .style("opacity", Number(config?.arc?.opacity))
+      .on("mouseover", (d) => onMouseOver(d))
+      .on("mousemove", (d) => onMouseMove(d))
+      .on("mouseout", (d) => onMouseOut(d));
+
+    svg
+      .append("text")
+      .attr("class", "title")
+      .attr("x", -width / 2 + 16)
+      .attr("y", -height / 2 + 16)
+      .style("font-weight", config?.title?.fontWeight)
+      .attr("dy", ".45em")
+      .text(config.title.text);
 
     group
       .append("text")
+      .attr("class", "arc-texts")
       .each((d) => {
         d.angle = (d.startAngle + d.endAngle) / 2;
       })
       .attr("dy", ".35em")
+      .attr("transform", "rotate(-65)")
       .attr(
         "transform",
         (d) => `
@@ -131,18 +162,103 @@
       .attr("text-anchor", (d) => (d.angle > Math.PI ? "end" : null))
       .text((d) => data.names[d.index]);
 
+    tooltip = d3
+      .select("#chart-wrapper")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0)
+      .style("position", "absolute")
+      .style("border-radius", "10px");
+
+    grads = svg
+      .append("defs")
+      .selectAll("linearGradient")
+      .data(chords)
+      .enter()
+      .append("linearGradient")
+      .attr("id", (d) => getGradID(d))
+      .attr("gradientUnits", "userSpaceOnUse")
+      .attr("x1", function (d, i) {
+        return (
+          innerRadius *
+          Math.cos(
+            (d.source.endAngle - d.source.startAngle) / 2 +
+              d.source.startAngle -
+              Math.PI / 2
+          )
+        );
+      })
+      .attr("y1", function (d, i) {
+        return (
+          innerRadius *
+          Math.sin(
+            (d.source.endAngle - d.source.startAngle) / 2 +
+              d.source.startAngle -
+              Math.PI / 2
+          )
+        );
+      })
+      .attr("x2", function (d, i) {
+        return (
+          innerRadius *
+          Math.cos(
+            (d.target.endAngle - d.target.startAngle) / 2 +
+              d.target.startAngle -
+              Math.PI / 2
+          )
+        );
+      })
+      .attr("y2", function (d, i) {
+        return (
+          innerRadius *
+          Math.sin(
+            (d.target.endAngle - d.target.startAngle) / 2 +
+              d.target.startAngle -
+              Math.PI / 2
+          )
+        );
+      });
+
+    // set the starting color (at 0%)
+    grads
+      .append("stop")
+      .attr("offset", "0%")
+      .attr("stop-color", function (d) {
+        return color(d.source.index);
+      });
+
+    //set the ending color (at 100%)
+    grads
+      .append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", function (d) {
+        return color(d.target.index);
+      });
+
+    function getGradID(d) {
+      return "linkGrad-" + d.source.index + "-" + d.target.index;
+    }
+
     svg
       .append("g")
       .attr("class", "ribbon")
-      .attr("fill-opacity", 0.67)
+      .attr("fill-opacity", Number(config?.ribbon?.opacity))
       .selectAll("path")
       .data(chords)
       .join("path")
       .attr("class", "chord")
+      .style("overflow", "visible")
       // .attr("stroke", (d) => d3.rgb(color(d.source.index)).darker())
+      .style("fill", (d) => {
+        if (config.chart.colors === "gradient") {
+          return "url(#" + getGradID(d) + ")";
+        } else {
+          return color(d.source.index);
+        }
+      })
       .attr("d", ribbon)
-      .attr("fill", (d) => color(d.source.index))
-      .on("mouseover", (d) => onMouseOver(d.source))
+      .on("mouseover", (d) => onMouseOver(d))
+      .on("mousemove", (d) => onMouseMove(d.source))
       .on("mouseout", (d) => onMouseOut(d.source));
   };
 
@@ -150,10 +266,11 @@
     // init_chart();
   };
 
-  setTimeout(()=> {
-    config.arc.paddingAngle = 0.03
-    change_config_handler(config)
-  },2000)
+  // setTimeout(() => {
+  //   config.arc.thickness = 40;
+  //   change_config_handler(config);
+  // }, 2000);
+
   const change_config_handler = (newConfig) => {
     svg
       .style("background-color", config.chart.background ?? "transparent")
@@ -168,21 +285,42 @@
       );
 
     chord.padAngle(Number(config?.arc?.paddingAngle));
+    // const chords = chord(data.matrix);
+    // svg.selectAll("path").data(chords);
 
     color = d3.scaleOrdinal(config?.chart?.palette.split(","));
 
     group
-      .select("path")
+      .selectAll("path.arc")
       .attr("d", arc)
+      .style("opacity", Number(config?.arc?.opacity))
       .attr("fill", (d) => color(d.index));
+
+    function getGradID(d) {
+      return "linkGrad-" + d.source.index + "-" + d.target.index;
+    }
 
     svg
       .selectAll("path.chord")
       // .attr("stroke", (d) => d3.rgb(color(d.source.index)).darker())
-      .style("fill", (d) => color(d.source.index));
+      .attr("fill-opacity", Number(config?.ribbon?.opacity))
+      .style("fill", (d) => {
+        if (config.chart.colors === "gradient") {
+          return "url(#" + getGradID(d) + ")";
+        } else {
+          return color(d.source.index);
+        }
+      });
+
+    svg
+      .select("text.title")
+      .style("color", config?.title?.color)
+      .style("font-size", config?.title?.fontSize)
+      .style("font-weight", config?.title?.fontWeight)
+      .text(config.title.text);
 
     group
-      .selectAll("text")
+      .selectAll("text.arc-texts")
       .attr(
         "transform",
         (d) => `
@@ -208,6 +346,7 @@
       matrix[index.get(source)][index.get(target)] += Number(count);
 
     return {
+      newData,
       matrix,
       names,
     };
@@ -223,16 +362,63 @@
   ////////////////// Events //////////////////
 
   function onMouseOver(selected) {
-    group.filter((d) => d.index !== selected.index).style("opacity", 0.3);
+    selectedIndex = selected?.index ?? selected.source.index;
+    group.filter((d) => d.index !== selectedIndex).style("opacity", 0.3);
 
     svg
       .selectAll(".chord")
-      .filter((d) => d.source.index !== selected.index)
+      .filter((d) => d.source.index !== selectedIndex)
       .style("opacity", 0.3);
+    showTooltip(selected);
   }
 
   function onMouseOut() {
     group.style("opacity", 1);
     svg.selectAll(".chord").style("opacity", 1);
+    tooltip.transition().duration(200).style("opacity", 0);
+    tooltip.selectAll("*").remove();
+  }
+
+  function onMouseMove() {
+    return tooltip
+      .style("margin-top", event.pageY - 60 + "px")
+      .style("margin-left", event.pageX + 20 + "px");
+  }
+
+  function createCard(selected) {
+    if (!selected?.source?.index) return;
+    var card = tooltip.append("div").attr("class", "card");
+    card
+      .append("div")
+      .attr("class", "card-header")
+      .style("background-color", "white")
+      .text(`Amount of word spoken`)
+      .style("font-size", ".9em");
+    card.append("div").attr("class", "card-body");
+    card
+      .select(".card-body")
+      .append("p")
+      .attr("class", "card-text")
+      .style("font-size", "0.8em")
+      .text(
+        `${data.names[selected.source.index]} -> ${
+          data.names[selected.target.index]
+        }:   ${selected.source.value}`
+      );
+    card
+      .select(".card-body")
+      .append("p")
+      .style("font-size", "0.8em")
+      .attr("class", "card-text")
+      .text(
+        `${data.names[selected.target.index]} -> ${
+          data.names[selected.source.index]
+        }:   ${selected.target.value}`
+      );
+  }
+
+  function showTooltip(selected) {
+    tooltip.transition().duration(200).style("opacity", 1);
+    createCard(selected);
   }
 </script>
