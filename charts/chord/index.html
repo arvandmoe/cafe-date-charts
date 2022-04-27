@@ -31,7 +31,7 @@
   let chart;
 
   // TODO : set develop to false
-  let develop = true;
+  let develop = false;
   if (develop) {
     window.onload = async () => {
       const data = await d3.csv("./data.csv");
@@ -46,7 +46,7 @@
             fontSize: 12,
             fontWeight: "bold",
             background: "transparent",
-            colors: "solid",
+            colors: "gradient",
             palette:
               "#11A579,#CC503E,#3969AC,#F2B701,#7F3C8D,#80BA5A,#E68310,#CF1C90,#008695,#F97B72,#4B4B8F,#A5AA99",
           },
@@ -284,7 +284,7 @@
           Number(config?.arc?.thickness)
       );
 
-    chord.padAngle(Number(config?.arc?.paddingAngle));
+    chord.padAngle(Number(newConfig?.arc?.paddingAngle));
     // const chords = chord(data.matrix);
     // svg.selectAll("path").data(chords);
 
@@ -341,7 +341,7 @@
     names = Array.from(new Set(newData.flatMap((d) => [d.source, d.target])));
 
     const index = new Map(names.map((name, i) => [name.trim(), i]));
-    const matrix = Array.from(index, () => new Array(names.length).fill(0));
+    let matrix = Array.from(index, () => new Array(names.length).fill(0));
     for (const { source, target, count } of newData)
       matrix[index.get(source)][index.get(target)] += Number(count);
 
@@ -363,17 +363,27 @@
 
   function onMouseOver(selected) {
     selectedIndex = selected?.index ?? selected.source.index;
-    group.filter((d) => d.index !== selectedIndex).style("opacity", 0.3);
+    group
+      .selectAll(".arc")
+      .filter((d) => {
+        return d.index !== selectedIndex;
+      })
+      .style("opacity", 0.3);
 
     svg
       .selectAll(".chord")
-      .filter((d) => d.source.index !== selectedIndex)
+      .filter((d) => {
+        if (selected.source) return d.source.index !== selectedIndex;
+        return (
+          d.source.index !== selected.index && d.target.index !== selected.index
+        );
+      })
       .style("opacity", 0.3);
     showTooltip(selected);
   }
 
   function onMouseOut() {
-    group.style("opacity", 1);
+    group.selectAll(".arc").style("opacity", 1);
     svg.selectAll(".chord").style("opacity", 1);
     tooltip.transition().duration(200).style("opacity", 0);
     tooltip.selectAll("*").remove();
