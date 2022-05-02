@@ -18,7 +18,7 @@
 <!-- <script src="https://d3js.org/d3.v7.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
 
-<script src="https://cafedata.io/charts/js/base-cafedata/v1.0.0.js"></script>
+<script src="/charts/js/base-cafedata/v1.0.0.js"></script>
 
 <link
   rel="stylesheet"
@@ -54,10 +54,13 @@
             opacity: "0.67",
           },
           title: {
+            show: true,
             fontWeight: "normal",
             text: "Chord Diagram",
-
-            fontSize: "12",
+            fontSize: "14",
+            subfontSize: "12",
+            subshow: true,
+            subtext: "Sub",
           },
           arc: {
             thickness: "30",
@@ -78,6 +81,8 @@
   let color;
   let tooltip;
   let grads;
+  let title;
+  let subTitle;
 
   const init_handler = async () => {
     outerRadius = Math.min(width, height) * 0.5;
@@ -129,14 +134,7 @@
       .on("mousemove", (d) => onMouseMove(d))
       .on("mouseout", (d) => onMouseOut(d));
 
-    svg
-      .append("text")
-      .attr("class", "title")
-      .attr("x", -width / 2 + 16)
-      .attr("y", -height / 2 + 16)
-      .style("font-weight", config?.title?.fontWeight)
-      .attr("dy", ".45em")
-      .text(config.title.text);
+    renderTitle();
 
     group
       .append("text")
@@ -267,7 +265,8 @@
   };
 
   // setTimeout(() => {
-  //   config.arc.thickness = 40;
+  //   config.title.text = "New Chord diagram";
+  //   config.title.fontSize = "44";
   //   change_config_handler(config);
   // }, 2000);
 
@@ -312,12 +311,7 @@
         }
       });
 
-    svg
-      .select("text.title")
-      .style("color", config?.title?.color)
-      .style("font-size", config?.title?.fontSize)
-      .style("font-weight", config?.title?.fontWeight)
-      .text(config.title.text);
+    renderTitle();
 
     group
       .selectAll("text.arc-texts")
@@ -360,6 +354,41 @@
   };
 
   ////////////////// Events //////////////////
+
+  function renderTitle() {
+    if (!title) {
+      title = svg
+        .append("text")
+        .attr("class", "title")
+        .attr("x", -width / 2 + 16);
+    }
+    title
+      .attr("y", -height / 2 + 16 + Number(config?.title?.fontSize))
+      .style("visibility", config?.title?.show ? "visible" : "hidden")
+      .style("fill", config?.title?.color)
+      .style("font-size", config?.title?.fontSize)
+      .style("font-weight", config?.title?.fontWeight)
+      .text(config.title.text);
+    if (!subTitle) {
+      subTitle = svg
+        .append("text")
+        .attr("class", "subTitle")
+        .attr("x", -width / 2 + 16);
+    }
+    subTitle
+      .attr(
+        "y",
+        -height / 2 +
+          24 +
+          Number(config?.title?.fontSize) +
+          Number(config?.title?.subfontSize)
+      )
+      .style("visibility", config?.title?.subshow ? "visible" : "hidden")
+      .style("fill", config?.title?.subcolor)
+      .style("font-size", config?.title?.subfontSize)
+      .style("font-weight", config?.title?.subfontWeight)
+      .text(config.title.subtext);
+  }
 
   function onMouseOver(selected) {
     selectedIndex = selected?.index ?? selected.source.index;

@@ -135,20 +135,20 @@
 		]
 	},
 	{
-		"name": "title",
+		"name": "Title",
 		"rows": [
 			{
-				"name": "title",
+				"name": "TITLE",
 				"components": [
 					{
-						"label": "show title",
+						"label": "Show title",
 						"field": "title.show",
 						"type": "switch",
 						"default": false,
 						"width": "100%"
 					},
 					{
-						"label": "title",
+						"label": "Title",
 						"field": "title.text",
 						"type": "input-text",
 						"default": "Chord diagram",
@@ -158,17 +158,17 @@
 						}
 					},
 					{
-						"label": "font size",
+						"label": "Font size",
 						"field": "title.fontSize",
 						"type": "input-number",
-						"default": "12",
+						"default": "14",
 						"width": "50%",
 						"show_if": {
 							"title.show": true
 						}
 					},
 					{
-						"label": "color",
+						"label": "Color",
 						"field": "title.color",
 						"type": "color-picker",
 						"default": "#000",
@@ -178,10 +178,10 @@
 						}
 					},
 					{
-						"label": "font weight",
+						"label": "Font weight",
 						"field": "title.fontWeight",
 						"type": "radio-button",
-						"default": "normal",
+						"default": "bold",
 						"width": "100%",
 						"options": [
 							{
@@ -200,27 +200,17 @@
 						"show_if": {
 							"title.show": true
 						}
-					},
-					{
-						"label": "background",
-						"field": "title.backgroundColor",
-						"type": "color-picker",
-						"default": "transparent",
-						"width": "100%",
-						"show_if": {
-							"title.show": true
-						}
 					}
 				]
 			},
 			{
-				"name": "subtitle",
+				"name": "SUBTITLE",
 				"show_if": {
 					"title.show": true
 				},
 				"components": [
 					{
-						"label": "show subtitle",
+						"label": "Show subtitle",
 						"field": "title.subshow",
 						"type": "switch",
 						"default": false,
@@ -230,7 +220,7 @@
 						}
 					},
 					{
-						"label": "subtitle",
+						"label": "Subtitle",
 						"field": "title.subtext",
 						"type": "input-text",
 						"default": "Subtitle",
@@ -240,7 +230,7 @@
 						}
 					},
 					{
-						"label": "font size",
+						"label": "Font size",
 						"field": "title.subfontSize",
 						"type": "input-number",
 						"default": "12",
@@ -250,7 +240,7 @@
 						}
 					},
 					{
-						"label": "color",
+						"label": "Color",
 						"field": "title.subcolor",
 						"type": "color-picker",
 						"default": "#333333",
@@ -260,7 +250,7 @@
 						}
 					},
 					{
-						"label": "fontWeight",
+						"label": "Font weight",
 						"field": "title.subfontWeight",
 						"type": "radio-button",
 						"default": "normal",

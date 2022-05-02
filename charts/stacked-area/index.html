@@ -19,7 +19,7 @@
 <script src="https://d3js.org/d3-collection.v1.min.js"></script>
 <script src="https://d3js.org/d3.v4.js"></script>
 
-<script src="https://cafedata.io/charts/js/base-cafedata/v1.0.0.js"></script>
+<script src="/charts/js/base-cafedata/v1.0.0.js"></script>
 
 <script>
   let option;
@@ -84,16 +84,18 @@
               name: "xAxis",
               showName: true,
               fontSize: "12",
-              nameLocation: "end",
+              nameLocation: "middle",
               position: "bottom",
               labelRotate: "0",
+              nameMargin: "40",
             },
             yAxis: {
               position: "left",
               showName: true,
               name: "yAxis",
-              nameLocation: "end",
+              nameLocation: "middle",
               labelRotate: "0",
+              nameMargin: "40",
             },
             subtext: {
               text: "hi man sd",
@@ -190,6 +192,7 @@
           position: config?.xAxis?.position,
           name: config?.xAxis?.showName && config?.xAxis?.name,
           nameLocation: config?.xAxis?.nameLocation,
+          nameGap: Number(config?.xAxis?.nameMargin),
           axisLabel: {
             fontSize: `${config?.xAxis?.fontSize}px`,
             rotate: config?.xAxis?.labelRotate,
@@ -203,6 +206,7 @@
           position: config?.yAxis?.position,
           name: config?.yAxis?.showName && config?.yAxis?.name,
           nameLocation: config?.yAxis?.nameLocation,
+          nameGap: Number(config?.yAxis?.nameMargin),
           axisLabel: {
             fontSize: `${config?.yAxis?.fontSize}px`,
             rotate: config?.yAxis?.labelRotate,

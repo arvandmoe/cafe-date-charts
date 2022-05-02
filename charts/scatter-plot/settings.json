@@ -51,40 +51,40 @@
 		]
 	},
 	{
-		"name": "title",
+		"name": "Title",
 		"rows": [
 			{
-				"name": "title",
+				"name": "TITLE",
 				"components": [
 					{
-						"label": "show title",
+						"label": "Show title",
 						"field": "title.show",
 						"type": "switch",
 						"default": false,
 						"width": "100%"
 					},
 					{
-						"label": "title",
+						"label": "Title",
 						"field": "title.text",
 						"type": "input-text",
-						"default": "Stacked Area Chart",
+						"default": "Scatter Plot",
 						"width": "100%",
 						"show_if": {
 							"title.show": true
 						}
 					},
 					{
-						"label": "font size",
+						"label": "Font size",
 						"field": "title.fontSize",
 						"type": "input-number",
-						"default": "12",
+						"default": "14",
 						"width": "50%",
 						"show_if": {
 							"title.show": true
 						}
 					},
 					{
-						"label": "color",
+						"label": "Color",
 						"field": "title.color",
 						"type": "color-picker",
 						"default": "#000",
@@ -94,10 +94,10 @@
 						}
 					},
 					{
-						"label": "font weight",
+						"label": "Font weight",
 						"field": "title.fontWeight",
 						"type": "radio-button",
-						"default": "normal",
+						"default": "bold",
 						"width": "100%",
 						"options": [
 							{
@@ -116,24 +116,17 @@
 						"show_if": {
 							"title.show": true
 						}
-					},
-					{
-						"label": "background",
-						"field": "title.backgroundColor",
-						"type": "color-picker",
-						"default": "transparent",
-						"width": "100%",
-						"show_if": {
-							"title.show": true
-						}
 					}
 				]
 			},
 			{
-				"name": "subtitle",
+				"name": "SUBTITLE",
+				"show_if": {
+					"title.show": true
+				},
 				"components": [
 					{
-						"label": "show subtitle",
+						"label": "Show subtitle",
 						"field": "title.subshow",
 						"type": "switch",
 						"default": false,
@@ -143,7 +136,7 @@
 						}
 					},
 					{
-						"label": "subtitle",
+						"label": "Subtitle",
 						"field": "title.subtext",
 						"type": "input-text",
 						"default": "Subtitle",
@@ -153,7 +146,7 @@
 						}
 					},
 					{
-						"label": "font size",
+						"label": "Font size",
 						"field": "title.subfontSize",
 						"type": "input-number",
 						"default": "12",
@@ -163,7 +156,7 @@
 						}
 					},
 					{
-						"label": "color",
+						"label": "Color",
 						"field": "title.subcolor",
 						"type": "color-picker",
 						"default": "#333333",
@@ -173,7 +166,7 @@
 						}
 					},
 					{
-						"label": "font weight",
+						"label": "Font weight",
 						"field": "title.subfontWeight",
 						"type": "radio-button",
 						"default": "normal",
@@ -194,180 +187,6 @@
 						],
 						"show_if": {
 							"title.subshow": true
-						}
-					}
-				]
-			}
-		]
-	},
-	{
-		"name": "legend",
-		"rows": [
-			{
-				"name": "legend",
-				"components": [
-					{
-						"label": "show legend",
-						"field": "legend.show",
-						"type": "switch",
-						"default": false,
-						"width": "100%"
-					},
-					{
-						"label": "orient",
-						"field": "legend.orient",
-						"type": "radio-button",
-						"default": "horizontal",
-						"width": "100%",
-						"options": [
-							{
-								"display": "horizontal",
-								"value": "horizontal"
-							},
-							{
-								"display": "vertical",
-								"value": "vertical"
-							}
-						],
-						"show_if": {
-							"legend.show": true
-						}
-					},
-					{
-						"label": "vertical alignment",
-						"field": "legend.vertical",
-						"type": "radio-button",
-						"default": "top",
-						"width": "100%",
-						"options": [
-							{
-								"display": "top",
-								"value": "top"
-							},
-							{
-								"display": "bottom",
-								"value": "bottom"
-							}
-						],
-						"show_if": {
-							"legend.show": true
-						}
-					},
-					{
-						"label": "horizontal alignment",
-						"field": "legend.horizontal",
-						"type": "radio-button",
-						"default": "right",
-						"width": "100%",
-						"options": [
-							{
-								"display": "left",
-								"value": "left"
-							},
-							{
-								"display": "center",
-								"value": "center"
-							},
-							{
-								"display": "right",
-								"value": "right"
-							}
-						],
-						"show_if": {
-							"legend.show": true
-						}
-					},
-					{
-						"label": "top",
-						"field": "legend.top",
-						"type": "input-number",
-						"default": "0",
-						"width": "50%",
-						"show_if": {
-							"legend.vertical": "top",
-							"legend.show": true
-						}
-					},
-					{
-						"label": "bottom",
-						"field": "legend.bottom",
-						"type": "input-number",
-						"default": "0",
-						"width": "50%",
-						"show_if": {
-							"legend.vertical": "bottom",
-							"legend.show": true
-						}
-					},
-					{
-						"label": "right",
-						"field": "legend.right",
-						"type": "input-number",
-						"default": "0",
-						"width": "50%",
-						"show_if": {
-							"legend.horizontal": "right",
-							"legend.show": true
-						}
-					},
-					{
-						"label": "left",
-						"field": "legend.left",
-						"type": "input-number",
-						"default": "0",
-						"width": "50%",
-						"show_if": {
-							"legend.horizontal": "left",
-							"legend.show": true
-						}
-					}
-				]
-			},
-			{
-				"name": "text style",
-				"components": [
-					{
-						"label": "font size",
-						"field": "legend.fontSize",
-						"type": "input-number",
-						"default": "10",
-						"width": "50%",
-						"show_if": {
-							"legend.show": true
-						}
-					},
-					{
-						"label": "color",
-						"field": "legend.color",
-						"type": "color-picker",
-						"default": "#000",
-						"width": "50%",
-						"show_if": {
-							"legend.show": true
-						}
-					},
-					{
-						"label": "font weight",
-						"field": "legend.fontWeight",
-						"type": "radio-button",
-						"default": "normal",
-						"width": "100%",
-						"options": [
-							{
-								"display": "lighter",
-								"value": "lighter"
-							},
-							{
-								"display": "normal",
-								"value": "normal"
-							},
-							{
-								"display": "bold",
-								"value": "bold"
-							}
-						],
-						"show_if": {
-							"legend.show": true
 						}
 					}
 				]

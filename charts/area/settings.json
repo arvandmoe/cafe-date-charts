@@ -242,7 +242,17 @@
 						"field": "xAxis.name",
 						"type": "input-text",
 						"default": "xAxis",
-						"width": "100%",
+						"width": "50%",
+						"show_if": {
+							"xAxis.showName": true
+						}
+					},
+					{
+						"label": "title margin",
+						"field": "xAxis.nameMargin",
+						"type": "input-number",
+						"default": "40",
+						"width": "50%",
 						"show_if": {
 							"xAxis.showName": true
 						}
@@ -319,21 +329,34 @@
 						"width": "25%"
 					},
 					{
-						"label": "label",
-						"field": "yAxis.name",
-						"type": "input-text",
-						"default": "xAxis",
-						"width": "50%"
-					},
-					{
-						"label": "show label",
+						"label": "show title",
 						"field": "yAxis.showName",
 						"type": "switch",
 						"default": false,
-						"width": "50%"
+						"width": "100%"
 					},
 					{
-						"label": "label location",
+						"label": "title",
+						"field": "yAxis.name",
+						"type": "input-text",
+						"default": "yAxis",
+						"width": "50%",
+						"show_if": {
+							"yAxis.showName": true
+						}
+					},
+					{
+						"label": "title margin",
+						"field": "yAxis.nameMargin",
+						"type": "input-number",
+						"default": "40",
+						"width": "50%",
+						"show_if": {
+							"yAxis.showName": true
+						}
+					},
+					{
+						"label": "title location",
 						"field": "yAxis.nameLocation",
 						"type": "radio-button",
 						"default": "end",
@@ -351,7 +374,10 @@
 								"display": "end",
 								"value": "end"
 							}
-						]
+						],
+						"show_if": {
+							"yAxis.showName": true
+						}
 					}
 				]
 			}
