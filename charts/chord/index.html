@@ -18,7 +18,7 @@
 <!-- <script src="https://d3js.org/d3.v7.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
 
-<script src="/charts/js/base-cafedata/v1.0.0.js"></script>
+<script src="https://plotset.com/charts/js/base-cafedata/v1.0.0.js"></script>
 
 <link
   rel="stylesheet"
@@ -31,7 +31,7 @@
   let chart;
 
   // TODO : set develop to false
-  let develop = false;
+  let develop = true;
   if (develop) {
     window.onload = async () => {
       const data = await d3.csv("./data.csv");
@@ -83,6 +83,7 @@
   let grads;
   let title;
   let subTitle;
+  let arcText;
 
   const init_handler = async () => {
     outerRadius = Math.min(width, height) * 0.5;
@@ -95,17 +96,6 @@
       .sortChords(d3.descending);
 
     const chords = chord(data.matrix);
-
-    arc = d3
-      .arc()
-      .innerRadius(innerRadius + Number(config?.arc?.spaceBelow))
-      .outerRadius(
-        innerRadius +
-          Number(config?.arc?.spaceBelow) +
-          Number(config?.arc?.thickness)
-      );
-
-    ribbon = d3.ribbon().radius(innerRadius);
 
     color = d3.scaleOrdinal(config?.chart?.palette.split(","));
 
@@ -123,6 +113,133 @@
 
     group = svg.append("g").selectAll("g").data(chords.groups).join("g");
 
+    renderArc();
+
+    renderTitle();
+
+    renderArcText();
+
+    renderTooltip();
+
+    renderGradients(chords);
+
+    ribbon = d3.ribbon().radius(innerRadius);
+
+    svg
+      .append("g")
+      .attr("class", "ribbon")
+      .attr("fill-opacity", Number(config?.ribbon?.opacity))
+      .selectAll("path")
+      .data(chords)
+      .join("path")
+      .attr("class", "chord")
+      .style("overflow", "visible")
+      // .attr("stroke", (d) => d3.rgb(color(d.source.index)).darker())
+      .style("fill", (d) => {
+        if (config.chart.colors === "gradient") {
+          return "url(#" + getGradID(d) + ")";
+        } else {
+          return color(d.source.index);
+        }
+      })
+      .attr("d", ribbon)
+      .on("mouseover", (d) => onMouseOver(d))
+      .on("mousemove", (d) => onMouseMove(d.source))
+      .on("mouseout", (d) => onMouseOut(d.source));
+  };
+
+  const change_col = (cols) => {
+    // init_chart();
+  };
+
+  // setTimeout(() => {
+  //   config.title.text = "New Chord diagram";
+  //   config.title.fontSize = "44";
+  //   config.arc.paddingAngle = 0.1;
+  //   config.arc.spaceBelow = 20;
+  //   change_config_handler(config);
+  // }, 2000);
+
+  const change_config_handler = (newConfig) => {
+    svg
+      .style("background-color", config.chart.background ?? "transparent")
+      .style("font-size", config?.chart?.fontSize)
+      .style("font-weight", config?.chart?.fontWeight);
+    arc
+      .innerRadius(innerRadius + Number(config.arc?.spaceBelow))
+      .outerRadius(
+        innerRadius +
+          Number(config.arc?.spaceBelow) +
+          Number(config?.arc?.thickness)
+      );
+
+    chord.padAngle(Number(newConfig?.arc?.paddingAngle));
+    const chords = chord(data.matrix);
+    renderGradients(chords);
+    renderArc();
+
+    color = d3.scaleOrdinal(config?.chart?.palette.split(","));
+
+    group
+      .selectAll("path.arc")
+      .attr("d", arc)
+      .style("opacity", Number(config?.arc?.opacity))
+      .attr("fill", (d) => color(d.index));
+
+    function getGradID(d) {
+      return "linkGrad-" + d.source.index + "-" + d.target.index;
+    }
+
+    svg
+      .selectAll("path.chord")
+      // .attr("stroke", (d) => d3.rgb(color(d.source.index)).darker())
+      .attr("fill-opacity", Number(config?.ribbon?.opacity))
+      .style("fill", (d) => {
+        if (config.chart.colors === "gradient") {
+          return "url(#" + getGradID(d) + ")";
+        } else {
+          return color(d.source.index);
+        }
+      });
+
+    renderTitle();
+
+    renderArcText();
+  };
+
+  const transformData = async (newData) => {
+    names = Array.from(new Set(newData.flatMap((d) => [d.source, d.target])));
+
+    const index = new Map(names.map((name, i) => [name.trim(), i]));
+    let matrix = Array.from(index, () => new Array(names.length).fill(0));
+    for (const { source, target, count } of newData)
+      matrix[index.get(source)][index.get(target)] += Number(count);
+
+    return {
+      newData,
+      matrix,
+      names,
+    };
+  };
+
+  const resizeHandler = () => {
+    d3.select("#chart-wrapper.svg")
+      .attr("viewBox", [-width / 2, -height / 2, width, height])
+      .style("width", width)
+      .style("height", height);
+  };
+
+  ////////////////// Render //////////////////
+
+  function renderArc() {
+    arc = d3
+      .arc()
+      .innerRadius(innerRadius + Number(config?.arc?.spaceBelow))
+      .outerRadius(
+        innerRadius +
+          Number(config?.arc?.spaceBelow) +
+          Number(config?.arc?.thickness)
+      );
     group
       .append("path")
       .attr("class", "arc")
@@ -133,11 +250,11 @@
       .on("mouseover", (d) => onMouseOver(d))
       .on("mousemove", (d) => onMouseMove(d))
       .on("mouseout", (d) => onMouseOut(d));
+  }
 
-    renderTitle();
-
-    group
-      .append("text")
+  function renderArcText() {
+    if (!arcText) arcText = group.append("text");
+    arcText
       .attr("class", "arc-texts")
       .each((d) => {
         d.angle = (d.startAngle + d.endAngle) / 2;
@@ -150,7 +267,7 @@
         rotate(${(d.angle * 180) / Math.PI - 90})
         translate(${
           innerRadius +
-          Number(config.arc?.spaceBelow) +
+          Number(config?.arc?.spaceBelow) +
           Number(config?.arc?.thickness) +
           12
         })
@@ -159,7 +276,9 @@
       )
       .attr("text-anchor", (d) => (d.angle > Math.PI ? "end" : null))
       .text((d) => data.names[d.index]);
+  }
 
+  function renderTooltip() {
     tooltip = d3
       .select("#chart-wrapper")
       .append("div")
@@ -167,13 +286,53 @@
       .style("opacity", 0)
       .style("position", "absolute")
       .style("border-radius", "10px");
+  }
 
-    grads = svg
-      .append("defs")
-      .selectAll("linearGradient")
-      .data(chords)
-      .enter()
-      .append("linearGradient")
+  function renderTitle() {
+    if (!title) {
+      title = svg
+        .append("text")
+        .attr("class", "title")
+        .attr("x", -width / 2 + 16);
+    }
+    title
+      .attr("y", -height / 2 + 16 + Number(config?.title?.fontSize))
+      .style("visibility", config?.title?.show ? "visible" : "hidden")
+      .style("fill", config?.title?.color)
+      .style("font-size", config?.title?.fontSize)
+      .style("font-weight", config?.title?.fontWeight)
+      .text(config.title.text);
+    if (!subTitle) {
+      subTitle = svg
+        .append("text")
+        .attr("class", "subTitle")
+        .attr("x", -width / 2 + 16);
+    }
+    subTitle
+      .attr(
+        "y",
+        -height / 2 +
+          24 +
+          Number(config?.title?.fontSize) +
+          Number(config?.title?.subfontSize)
+      )
+      .style("visibility", config?.title?.subshow ? "visible" : "hidden")
+      .style("fill", config?.title?.subcolor)
+      .style("font-size", config?.title?.subfontSize)
+      .style("font-weight", config?.title?.subfontWeight)
+      .text(config.title.subtext);
+  }
+
+  function renderGradients(chords) {
+    if (!grads) {
+      grads = svg
+        .append("defs")
+        .selectAll("linearGradient")
+        .data(chords)
+        .enter()
+        .append("linearGradient");
+    }
+    grads
       .attr("id", (d) => getGradID(d))
       .attr("gradientUnits", "userSpaceOnUse")
       .attr("x1", function (d, i) {
@@ -232,163 +391,9 @@
       .attr("stop-color", function (d) {
         return color(d.target.index);
       });
-
-    function getGradID(d) {
-      return "linkGrad-" + d.source.index + "-" + d.target.index;
-    }
-
-    svg
-      .append("g")
-      .attr("class", "ribbon")
-      .attr("fill-opacity", Number(config?.ribbon?.opacity))
-      .selectAll("path")
-      .data(chords)
-      .join("path")
-      .attr("class", "chord")
-      .style("overflow", "visible")
-      // .attr("stroke", (d) => d3.rgb(color(d.source.index)).darker())
-      .style("fill", (d) => {
-        if (config.chart.colors === "gradient") {
-          return "url(#" + getGradID(d) + ")";
-        } else {
-          return color(d.source.index);
-        }
-      })
-      .attr("d", ribbon)
-      .on("mouseover", (d) => onMouseOver(d))
-      .on("mousemove", (d) => onMouseMove(d.source))
-      .on("mouseout", (d) => onMouseOut(d.source));
-  };
-
-  const change_col = (cols) => {
-    // init_chart();
-  };
-
-  // setTimeout(() => {
-  //   config.title.text = "New Chord diagram";
-  //   config.title.fontSize = "44";
-  //   change_config_handler(config);
-  // }, 2000);
-
-  const change_config_handler = (newConfig) => {
-    svg
-      .style("background-color", config.chart.background ?? "transparent")
-      .style("font-size", config?.chart?.fontSize)
-      .style("font-weight", config?.chart?.fontWeight);
-    arc
-      .innerRadius(innerRadius + Number(config.arc?.spaceBelow))
-      .outerRadius(
-        innerRadius +
-          Number(config.arc?.spaceBelow) +
-          Number(config?.arc?.thickness)
-      );
-
-    chord.padAngle(Number(newConfig?.arc?.paddingAngle));
-    // const chords = chord(data.matrix);
-    // svg.selectAll("path").data(chords);
-
-    color = d3.scaleOrdinal(config?.chart?.palette.split(","));
-
-    group
-      .selectAll("path.arc")
-      .attr("d", arc)
-      .style("opacity", Number(config?.arc?.opacity))
-      .attr("fill", (d) => color(d.index));
-
-    function getGradID(d) {
-      return "linkGrad-" + d.source.index + "-" + d.target.index;
-    }
-
-    svg
-      .selectAll("path.chord")
-      // .attr("stroke", (d) => d3.rgb(color(d.source.index)).darker())
-      .attr("fill-opacity", Number(config?.ribbon?.opacity))
-      .style("fill", (d) => {
-        if (config.chart.colors === "gradient") {
-          return "url(#" + getGradID(d) + ")";
-        } else {
-          return color(d.source.index);
-        }
-      });
-
-    renderTitle();
-
-    group
-      .selectAll("text.arc-texts")
-      .attr(
-        "transform",
-        (d) => `
-        rotate(${(d.angle * 180) / Math.PI - 90})
-        translate(${
-          innerRadius +
-          Number(config.arc?.spaceBelow) +
-          Number(config?.arc?.thickness) +
-          12
-        })
-        ${d.angle > Math.PI ? "rotate(180)" : ""}
-      `
-      )
-      .transition();
-  };
-
-  const transformData = async (newData) => {
-    names = Array.from(new Set(newData.flatMap((d) => [d.source, d.target])));
-
-    const index = new Map(names.map((name, i) => [name.trim(), i]));
-    let matrix = Array.from(index, () => new Array(names.length).fill(0));
-    for (const { source, target, count } of newData)
-      matrix[index.get(source)][index.get(target)] += Number(count);
-
-    return {
-      newData,
-      matrix,
-      names,
-    };
-  };
-
-  const resizeHandler = () => {
-    // TODO: handle resize
-    //   .attr("viewBox", [-width / 2, -height / 2, width, height])
-    //   .style("width", width > height ? height : width)
-    //   .style("height", width <= height ? width : height);
-  };
+  }
 
   ////////////////// Events //////////////////
-
-  function renderTitle() {
-    if (!title) {
-      title = svg
-        .append("text")
-        .attr("class", "title")
-        .attr("x", -width / 2 + 16);
-    }
-    title
-      .attr("y", -height / 2 + 16 + Number(config?.title?.fontSize))
-      .style("visibility", config?.title?.show ? "visible" : "hidden")
-      .style("fill", config?.title?.color)
-      .style("font-size", config?.title?.fontSize)
-      .style("font-weight", config?.title?.fontWeight)
-      .text(config.title.text);
-    if (!subTitle) {
-      subTitle = svg
-        .append("text")
-        .attr("class", "subTitle")
-        .attr("x", -width / 2 + 16);
-    }
-    subTitle
-      .attr(
-        "y",
-        -height / 2 +
-          24 +
-          Number(config?.title?.fontSize) +
-          Number(config?.title?.subfontSize)
-      )
-      .style("visibility", config?.title?.subshow ? "visible" : "hidden")
-      .style("fill", config?.title?.subcolor)
-      .style("font-size", config?.title?.subfontSize)
-      .style("font-weight", config?.title?.subfontWeight)
-      .text(config.title.subtext);
-  }
 
   function onMouseOver(selected) {
     selectedIndex = selected?.index ?? selected.source.index;
@@ -459,5 +464,11 @@
   function showTooltip(selected) {
     tooltip.transition().duration(200).style("opacity", 1);
     createCard(selected);
+  }
+
+  ////////////////// Utils //////////////////
+
+  function getGradID(d) {
+    return "linkGrad-" + d.source.index + "-" + d.target.index;
   }
 </script>
