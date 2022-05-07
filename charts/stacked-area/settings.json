@@ -65,19 +65,20 @@
 		]
 	},
 	{
-		"name": "title",
+		"name": "Title",
 		"rows": [
 			{
+				"name": "TITLE",
 				"components": [
 					{
-						"label": "show",
+						"label": "Show title",
 						"field": "title.show",
 						"type": "switch",
 						"default": false,
 						"width": "100%"
 					},
 					{
-						"label": "title",
+						"label": "Title",
 						"field": "title.text",
 						"type": "input-text",
 						"default": "Stacked Area Chart",
@@ -87,7 +88,7 @@
 						}
 					},
 					{
-						"label": "font size",
+						"label": "Font size",
 						"field": "title.fontSize",
 						"type": "input-number",
 						"default": "12",
@@ -97,17 +98,17 @@
 						}
 					},
 					{
-						"label": "backgroundColor",
-						"field": "title.backgroundColor",
+						"label": "Color",
+						"field": "title.color",
 						"type": "color-picker",
-						"default": "transparent",
+						"default": "#000",
 						"width": "50%",
 						"show_if": {
 							"title.show": true
 						}
 					},
 					{
-						"label": "fontWeight",
+						"label": "Font weight",
 						"field": "title.fontWeight",
 						"type": "radio-button",
 						"default": "normal",
@@ -131,6 +132,75 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "SUBTITLE",
+				"show_if": {
+					"title.show": true
+				},
+				"components": [
+					{
+						"label": "Show subtitle",
+						"field": "title.subshow",
+						"type": "switch",
+						"default": false,
+						"width": "100%"
+					},
+					{
+						"label": "Subtitle",
+						"field": "title.subtext",
+						"type": "input-text",
+						"default": "Subtitle",
+						"width": "100%",
+						"show_if": {
+							"title.subshow": true
+						}
+					},
+					{
+						"label": "Font size",
+						"field": "title.subfontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%",
+						"show_if": {
+							"title.subshow": true
+						}
+					},
+					{
+						"label": "Color",
+						"field": "title.subcolor",
+						"type": "color-picker",
+						"default": "#333333",
+						"width": "50%",
+						"show_if": {
+							"title.subshow": true
+						}
+					},
+					{
+						"label": "FontWeight",
+						"field": "title.subfontWeight",
+						"type": "radio-button",
+						"default": "normal",
+						"width": "100%",
+						"options": [
+							{
+								"display": "lighter",
+								"value": "lighter"
+							},
+							{
+								"display": "normal",
+								"value": "normal"
+							},
+							{
+								"display": "bold",
+								"value": "bold"
+							}
+						],
+						"show_if": {
+							"title.subshow": true
+						}
+					}
+				]
 			}
 		]
 	},
@@ -138,7 +208,7 @@
 		"name": "legend",
 		"rows": [
 			{
-				"name": "position",
+				"name": "legend",
 				"components": [
 					{
 						"label": "show legend",
@@ -162,7 +232,10 @@
 								"display": "vertical",
 								"value": "vertical"
 							}
-						]
+						],
+						"show_if": {
+							"legend.show": true
+						}
 					},
 					{
 						"label": "vertical alignment",
@@ -179,7 +252,10 @@
 								"display": "bottom",
 								"value": "bottom"
 							}
-						]
+						],
+						"show_if": {
+							"legend.show": true
+						}
 					},
 					{
 						"label": "horizontal alignment",
@@ -193,10 +269,17 @@
 								"value": "left"
 							},
 							{
+								"display": "center",
+								"value": "center"
+							},
+							{
 								"display": "right",
 								"value": "right"
 							}
-						]
+						],
+						"show_if": {
+							"legend.show": true
+						}
 					},
 					{
 						"label": "top",
@@ -205,7 +288,8 @@
 						"default": "0",
 						"width": "50%",
 						"show_if": {
-							"legend.vertical": "top"
+							"legend.vertical": "top",
+							"legend.show": true
 						}
 					},
 					{
@@ -215,7 +299,8 @@
 						"default": "0",
 						"width": "50%",
 						"show_if": {
-							"legend.vertical": "bottom"
+							"legend.vertical": "bottom",
+							"legend.show": true
 						}
 					},
 					{
@@ -225,7 +310,8 @@
 						"default": "0",
 						"width": "50%",
 						"show_if": {
-							"legend.horizontal": "right"
+							"legend.horizontal": "right",
+							"legend.show": true
 						}
 					},
 					{
@@ -235,13 +321,17 @@
 						"default": "0",
 						"width": "50%",
 						"show_if": {
-							"legend.horizontal": "left"
+							"legend.horizontal": "left",
+							"legend.show": true
 						}
 					}
 				]
 			},
 			{
 				"name": "text style",
+				"show_if": {
+					"legend.show": true
+				},
 				"components": [
 					{
 						"label": "font size",
@@ -258,7 +348,7 @@
 						"width": "50%"
 					},
 					{
-						"label": "fontWeight",
+						"label": "font weight",
 						"field": "legend.fontWeight",
 						"type": "radio-button",
 						"default": "normal",
@@ -283,7 +373,7 @@
 		]
 	},
 	{
-		"name": "xAxis",
+		"name": "X axis",
 		"rows": [
 			{
 				"components": [
@@ -326,21 +416,34 @@
 						"width": "25%"
 					},
 					{
-						"label": "label",
-						"field": "xAxis.name",
-						"type": "input-text",
-						"default": "xAxis",
-						"width": "50%"
-					},
-					{
-						"label": "show label",
+						"label": "show title",
 						"field": "xAxis.showName",
 						"type": "switch",
 						"default": false,
-						"width": "50%"
+						"width": "100%"
 					},
 					{
-						"label": "label location",
+						"label": "title",
+						"field": "xAxis.name",
+						"type": "input-text",
+						"default": "xAxis",
+						"width": "50%",
+						"show_if": {
+							"xAxis.showName": true
+						}
+					},
+					{
+						"label": "title margin",
+						"field": "xAxis.nameMargin",
+						"type": "input-number",
+						"default": "40",
+						"width": "50%",
+						"show_if": {
+							"xAxis.showName": true
+						}
+					},
+					{
+						"label": "title location",
 						"field": "xAxis.nameLocation",
 						"type": "radio-button",
 						"default": "end",
@@ -358,14 +461,17 @@
 								"display": "end",
 								"value": "end"
 							}
-						]
+						],
+						"show_if": {
+							"xAxis.showName": true
+						}
 					}
 				]
 			}
 		]
 	},
 	{
-		"name": "yAxis",
+		"name": "Y axis",
 		"rows": [
 			{
 				"components": [
@@ -387,6 +493,13 @@
 						]
 					},
 					{
+						"label": "font size",
+						"field": "yAxis.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%"
+					},
+					{
 						"label": "rotation",
 						"field": "yAxis.labelRotate",
 						"type": "input-number",
@@ -401,21 +514,34 @@
 						"width": "25%"
 					},
 					{
-						"label": "label",
-						"field": "yAxis.name",
-						"type": "input-text",
-						"default": "xAxis",
-						"width": "50%"
-					},
-					{
-						"label": "show label",
+						"label": "show title",
 						"field": "yAxis.showName",
 						"type": "switch",
 						"default": false,
-						"width": "50%"
+						"width": "100%"
 					},
 					{
-						"label": "label location",
+						"label": "title",
+						"field": "yAxis.name",
+						"type": "input-text",
+						"default": "yAxis",
+						"width": "50%",
+						"show_if": {
+							"yAxis.showName": true
+						}
+					},
+					{
+						"label": "title margin",
+						"field": "yAxis.nameMargin",
+						"type": "input-number",
+						"default": "40",
+						"width": "50%",
+						"show_if": {
+							"yAxis.showName": true
+						}
+					},
+					{
+						"label": "title location",
 						"field": "yAxis.nameLocation",
 						"type": "radio-button",
 						"default": "end",
@@ -433,7 +559,10 @@
 								"display": "end",
 								"value": "end"
 							}
-						]
+						],
+						"show_if": {
+							"yAxis.showName": true
+						}
 					}
 				]
 			}

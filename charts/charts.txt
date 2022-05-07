@@ -1,0 +1,5 @@
+stacked-area 9
+basic-heatmap 49
+scatter-plot 50
+chord-diagram 73
+area 27

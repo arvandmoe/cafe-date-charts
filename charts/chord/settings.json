@@ -1,0 +1,280 @@
+[
+	{
+		"name": "chart",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "font size",
+						"field": "chart.fontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%"
+					},
+					{
+						"label": "background",
+						"field": "chart.background",
+						"type": "color-picker",
+						"default": "#ffffff",
+						"width": "50%"
+					},
+					{
+						"label": "palette",
+						"field": "chart.palette",
+						"type": "select-color-palette",
+						"default": "#2C1320,#006D77,#DB5461,#E2EF70,#94C9A9,#ADA7C9,#2EC4B6,#CEDFD9,#008695,#ACAD94,#4B4B8F,#85BDA6",
+						"width": "100%",
+						"options": [
+							{
+								"display": "third",
+								"value": "#2C1320,#006D77,#DB5461,#E2EF70,#94C9A9,#ADA7C9,#2EC4B6,#CEDFD9,#008695,#ACAD94,#4B4B8F,#85BDA6"
+							},
+							{
+								"display": "first",
+								"value": "#5470c6,#91cc75,#fac858,#ee6666,#73c0de,#F2B701,#2EC4B6,#9a60b4,#ea7ccc,#a4243b,#00072d,#b6465f"
+							},
+							{
+								"display": "second",
+								"value": "#11A579,#CC503E,#3969AC,#F2B701,#7F3C8D,#80BA5A,#E68310,#CF1C90,#008695,#F97B72,#4B4B8F,#A5AA99"
+							}
+						]
+					},
+					{
+						"label": "colors",
+						"field": "chart.colors",
+						"type": "radio-button",
+						"default": "gradient",
+						"width": "100%",
+						"options": [
+							{
+								"display": "solid",
+								"value": "solid"
+							},
+							{
+								"display": "gradient",
+								"value": "gradient"
+							}
+						]
+					},
+					{
+						"label": "fontWeight",
+						"field": "chart.fontWeight",
+						"type": "radio-button",
+						"default": "normal",
+						"width": "100%",
+						"options": [
+							{
+								"display": "lighter",
+								"value": "lighter"
+							},
+							{
+								"display": "normal",
+								"value": "normal"
+							},
+							{
+								"display": "bold",
+								"value": "bold"
+							}
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "arc",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "opacity",
+						"field": "arc.opacity",
+						"type": "input-number",
+						"default": "1",
+						"width": "50%"
+					},
+					{
+						"label": "thickness",
+						"field": "arc.thickness",
+						"type": "input-number",
+						"default": "20",
+						"width": "50%"
+					},
+					{
+						"label": "space below",
+						"field": "arc.spaceBelow",
+						"type": "input-number",
+						"default": "5",
+						"width": "50%"
+					},
+					{
+						"label": "padding angle",
+						"field": "arc.paddingAngle",
+						"type": "input-number",
+						"default": "0.02",
+						"width": "50%"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "ribbon",
+		"rows": [
+			{
+				"components": [
+					{
+						"label": "opacity",
+						"field": "ribbon.opacity",
+						"type": "input-number",
+						"default": "0.9",
+						"width": "50%"
+					}
+				]
+			}
+		]
+	},
+	{
+		"name": "Title",
+		"rows": [
+			{
+				"name": "TITLE",
+				"components": [
+					{
+						"label": "Show title",
+						"field": "title.show",
+						"type": "switch",
+						"default": false,
+						"width": "100%"
+					},
+					{
+						"label": "Title",
+						"field": "title.text",
+						"type": "input-text",
+						"default": "Chord diagram",
+						"width": "100%",
+						"show_if": {
+							"title.show": true
+						}
+					},
+					{
+						"label": "Font size",
+						"field": "title.fontSize",
+						"type": "input-number",
+						"default": "14",
+						"width": "50%",
+						"show_if": {
+							"title.show": true
+						}
+					},
+					{
+						"label": "Color",
+						"field": "title.color",
+						"type": "color-picker",
+						"default": "#000",
+						"width": "50%",
+						"show_if": {
+							"title.show": true
+						}
+					},
+					{
+						"label": "Font weight",
+						"field": "title.fontWeight",
+						"type": "radio-button",
+						"default": "bold",
+						"width": "100%",
+						"options": [
+							{
+								"display": "lighter",
+								"value": "lighter"
+							},
+							{
+								"display": "normal",
+								"value": "normal"
+							},
+							{
+								"display": "bold",
+								"value": "bold"
+							}
+						],
+						"show_if": {
+							"title.show": true
+						}
+					}
+				]
+			},
+			{
+				"name": "SUBTITLE",
+				"show_if": {
+					"title.show": true
+				},
+				"components": [
+					{
+						"label": "Show subtitle",
+						"field": "title.subshow",
+						"type": "switch",
+						"default": false,
+						"width": "100%",
+						"show_if": {
+							"title.show": true
+						}
+					},
+					{
+						"label": "Subtitle",
+						"field": "title.subtext",
+						"type": "input-text",
+						"default": "Subtitle",
+						"width": "100%",
+						"show_if": {
+							"title.subshow": true
+						}
+					},
+					{
+						"label": "Font size",
+						"field": "title.subfontSize",
+						"type": "input-number",
+						"default": "12",
+						"width": "50%",
+						"show_if": {
+							"title.subshow": true
+						}
+					},
+					{
+						"label": "Color",
+						"field": "title.subcolor",
+						"type": "color-picker",
+						"default": "#333333",
+						"width": "50%",
+						"show_if": {
+							"title.subshow": true
+						}
+					},
+					{
+						"label": "Font weight",
+						"field": "title.subfontWeight",
+						"type": "radio-button",
+						"default": "normal",
+						"width": "100%",
+						"options": [
+							{
+								"display": "lighter",
+								"value": "lighter"
+							},
+							{
+								"display": "normal",
+								"value": "normal"
+							},
+							{
+								"display": "bold",
+								"value": "bold"
+							}
+						],
+						"show_if": {
+							"title.subshow": true
+						}
+					}
+				]
+			}
+		]
+	}
+]

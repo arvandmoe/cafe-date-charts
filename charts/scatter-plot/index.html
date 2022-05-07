@@ -19,7 +19,7 @@
 <script src="https://d3js.org/d3-collection.v1.min.js"></script>
 <script src="https://d3js.org/d3.v4.js"></script>
 
-<script src="https://cafedata.io/charts/js/base-cafedata/v1.0.0.js"></script>
+<script src="/charts/js/base-cafedata/v1.0.0.js"></script>
 
 <script>
   let option;
@@ -115,8 +115,8 @@
 
   const get_options = () => {
     option = {
-      color: config.chart.palette.split(","),
-       backgroundColor: config?.chart?.background,
+      color: config.chart.color,
+      backgroundColor: config?.chart?.background,
       textStyle: {
         fontSize: `${config.chart?.fontSize}px`,
         fontWeight: config.chart?.fontWeight,
@@ -124,31 +124,17 @@
       title: {
         show: config?.title?.show,
         text: config?.title?.text,
+        backgroundColor: config?.title?.backgroundColor,
         textStyle: {
           color: config?.title?.color,
           fontSize: `${config?.title?.fontSize}px`,
           fontWeight: config?.title?.fontWeight,
         },
-        backgroundColor: config?.title?.backgroundColor,
-      },
-      legend: {
-        show: config?.legend.show,
-        orient: config?.legend.orient,
-        top: config?.legend.vertical == "top" ? config?.legend.top : undefined,
-        right:
-          config?.legend.horizontal == "right"
-            ? config?.legend.right
-            : undefined,
-        bottom:
-          config?.legend.vertical == "bottom"
-            ? config?.legend.bottom
-            : undefined,
-        left:
-          config?.legend.horizontal == "left" ? config?.legend.left : undefined,
-        textStyle: {
-          color: config?.legend.color,
-          fontSize: config?.legend.fontSize,
-          fontWeight: config?.legend.fontWeight,
+        subtext: config?.title?.subshow ? config?.title?.subtext : undefined,
+        subtextStyle: {
+          color: config?.title?.subcolor,
+          fontSize: `${config?.title?.subfontSize}px`,
+          fontWeight: config?.title?.subfontWeight,
         },
       },
       xAxis: {
