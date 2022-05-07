@@ -113,7 +113,7 @@
 
     group = svg.append("g").selectAll("g").data(chords.groups).join("g");
 
-    renderArc();
+    renderArc(chords);
 
     renderTitle();
 
@@ -121,74 +121,41 @@
 
     renderTooltip();
 
-    renderGradients(chords);
-
-    ribbon = d3.ribbon().radius(innerRadius);
-
-    svg
-      .append("g")
-      .attr("class", "ribbon")
-      .attr("fill-opacity", Number(config?.ribbon?.opacity))
-      .selectAll("path")
-      .data(chords)
-      .join("path")
-      .attr("class", "chord")
-      .style("overflow", "visible")
-      // .attr("stroke", (d) => d3.rgb(color(d.source.index)).darker())
-      .style("fill", (d) => {
-        if (config.chart.colors === "gradient") {
-          return "url(#" + getGradID(d) + ")";
-        } else {
-          return color(d.source.index);
-        }
-      })
-      .attr("d", ribbon)
-      .on("mouseover", (d) => onMouseOver(d))
-      .on("mousemove", (d) => onMouseMove(d.source))
-      .on("mouseout", (d) => onMouseOut(d.source));
+    renderRibbon(chords);
   };
 
   const change_col = (cols) => {
     // init_chart();
   };
 
-  // setTimeout(() => {
-  //   config.title.text = "New Chord diagram";
-  //   config.title.fontSize = "44";
-  //   config.arc.paddingAngle = 0.1;
-  //   config.arc.spaceBelow = 20;
-  //   change_config_handler(config);
-  // }, 2000);
+  setTimeout(() => {
+    config.title.text = "New Chord diagram";
+    config.chart.pallete =
+      "#11A579,#CC503E,#3969AC,#F2B701,#7F3C8D,#80BA5A,#E68310,#CF1C90,#008695,#F97B72,#4B4B8F,#A5AA99";
+    config.title.fontSize = "44";
+    config.arc.paddingAngle = 0.1;
+    config.arc.spaceBelow = 20;
+    config.arc.opacity = 0.5;
+    change_config_handler(config);
+  }, 2000);
 
   const change_config_handler = (newConfig) => {
     svg
-      .style("background-color", config.chart.background ?? "transparent")
+      .style("background-color", config?.chart?.background ?? "transparent")
       .style("font-size", config?.chart?.fontSize)
       .style("font-weight", config?.chart?.fontWeight);
-    arc
-      .innerRadius(innerRadius + Number(config.arc?.spaceBelow))
-      .outerRadius(
-        innerRadius +
-          Number(config.arc?.spaceBelow) +
-          Number(config?.arc?.thickness)
-      );
 
-    chord.padAngle(Number(newConfig?.arc?.paddingAngle));
+    chord = d3
+      .chord()
+      .padAngle(Number(config?.arc?.paddingAngle))
+      .sortSubgroups(d3.descending)
+      .sortChords(d3.descending);
+
     const chords = chord(data.matrix);
-    renderGradients(chords);
-    renderArc();
+    renderArc(chords);
+    renderRibbon(chords);
 
     color = d3.scaleOrdinal(config?.chart?.palette.split(","));
-
-    group
-      .selectAll("path.arc")
-      .attr("d", arc)
-      .style("opacity", Number(config?.arc?.opacity))
-      .attr("fill", (d) => color(d.index));
-
-    function getGradID(d) {
-      return "linkGrad-" + d.source.index + "-" + d.target.index;
-    }
 
     svg
       .selectAll("path.chord")
@@ -231,7 +198,9 @@
 
   ////////////////// Render //////////////////
 
-  function renderArc() {
+  function renderArc(chords) {
+    group.selectAll("path.arc").remove();
+    group = svg.append("g").selectAll("g").data(chords.groups).join("g");
     arc = d3
       .arc()
       .innerRadius(innerRadius + Number(config?.arc?.spaceBelow))
@@ -242,14 +211,44 @@
       );
     group
       .append("path")
-      .attr("class", "arc")
       .attr("fill", (d) => color(d.index))
       // .attr("stroke", (d) => d3.rgb(color(d.index)).darker())
+      .attr("class", "arc")
+      .attr("id", function (d, i) {
+        return "arc_" + i;
+      })
       .attr("d", arc)
       .style("opacity", Number(config?.arc?.opacity))
       .on("mouseover", (d) => onMouseOver(d))
       .on("mousemove", (d) => onMouseMove(d))
       .on("mouseout", (d) => onMouseOut(d));
+  }
+
+  function renderRibbon(chords) {
+    renderGradients(chords);
+    ribbon = d3.ribbon().radius(innerRadius);
+    svg.selectAll("g.ribbon").remove();
+    svg
+      .append("g")
+      .attr("class", "ribbon")
+      .attr("fill-opacity", Number(config?.ribbon?.opacity))
+      .selectAll("path")
+      .data(chords)
+      .join("path")
+      .attr("class", "chord")
+      .style("overflow", "visible")
+      // .attr("stroke", (d) => d3.rgb(color(d.source.index)).darker())
+      .style("fill", (d) => {
+        if (config.chart.colors === "gradient") {
+          return "url(#" + getGradID(d) + ")";
+        } else {
+          return color(d.source.index);
+        }
+      })
+      .attr("d", ribbon)
+      .on("mouseover", (d) => onMouseOver(d))
+      .on("mousemove", (d) => onMouseMove(d.source))
+      .on("mouseout", (d) => onMouseOut(d.source));
   }
 
   function renderArcText() {
@@ -275,6 +274,10 @@
       `
       )
       .attr("text-anchor", (d) => (d.angle > Math.PI ? "end" : null))
+      .append("textPath")
+      .attr("xlink:href", function (d, i) {
+        return "#arc_" + i;
+      })
       .text((d) => data.names[d.index]);
   }
 
@@ -324,15 +327,13 @@
   }
 
   function renderGradients(chords) {
-    if (!grads) {
-      grads = svg
-        .append("defs")
-        .selectAll("linearGradient")
-        .data(chords)
-        .enter()
-        .append("linearGradient");
-    }
-    grads
+    if (grads) svg.select("defs").remove();
+    grads = svg
+      .append("defs")
+      .selectAll("linearGradient")
+      .data(chords)
+      .enter()
+      .append("linearGradient")
       .attr("id", (d) => getGradID(d))
       .attr("gradientUnits", "userSpaceOnUse")
       .attr("x1", function (d, i) {
